@@ -1,6 +1,9 @@
 """Synthetic private-state and workflow tests; no external network or actual CV."""
 
 import sys
+import sysconfig
+import os
+from contextlib import chdir
 import tempfile
 import unittest
 from pathlib import Path
@@ -34,6 +37,31 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(self.store.get_profile().fields, {})
         self.assertEqual(self.store.get_history(['123']).items[0].excluded, False)
         self.assertFalse(self.root.exists())
+
+    def test_default_state_survives_working_directory_changes_without_migration(self):
+        first = self.root.parent / 'first-launch'
+        second = self.root.parent / 'second-launch'
+        first.mkdir()
+        second.mkdir()
+        # An old cwd/local profile must not be scanned or imported implicitly.
+        LocalStore(first / 'local').update_profile(questionnaire={'target_roles': 'Old example'})
+        with patch.dict(os.environ, {'DJINNI_MCP_DATA_DIR': ''}), \
+                patch('djinni_mcp.state.user_data_path', return_value=self.root):
+            with chdir(first):
+                store = LocalStore()
+                self.assertEqual(store.get_profile().fields, {})
+                self.assertFalse(self.root.exists())
+                store.update_profile(questionnaire={'target_roles': 'New example'})
+            with chdir(second):
+                self.assertEqual(LocalStore().get_profile().fields['target_roles'], 'New example')
+            self.assertFalse((second / 'local').exists())
+
+    def test_explicit_path_and_environment_keep_existing_profiles(self):
+        old = self.root.parent / 'old-data'
+        LocalStore(old).update_profile(questionnaire={'target_roles': 'Existing example'})
+        with patch.dict(os.environ, {'DJINNI_MCP_DATA_DIR': str(old)}):
+            self.assertEqual(LocalStore().get_profile().fields['target_roles'], 'Existing example')
+            self.assertEqual(LocalStore(self.root).get_profile().fields, {})
 
     def test_questionnaire_precedence_patches_and_explicit_cv_refresh(self):
         first = self.store.update_profile(questionnaire={'salary':'USD 3000/month','current_location':'Example A'},
@@ -172,7 +200,7 @@ class StateProtocolTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(LocalStore(self.root).get_profile().fields['target_roles'],'Example operations')
 
     async def test_installed_stdio_state_survives_a_fresh_process(self):
-        parameters=StdioServerParameters(command=str(Path(sys.executable).parent/'djinni-mcp'),
+        parameters=StdioServerParameters(command=str(Path(sysconfig.get_path('scripts')) / ('djinni-mcp.exe' if os.name == 'nt' else 'djinni-mcp')),
             env={'DJINNI_MCP_DATA_DIR':str(self.root)})
         async with Client(parameters) as client:
             profile=await client.call_tool('update_profile',{'questionnaire':{'salary':'Example salary'}})

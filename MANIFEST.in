@@ -1,0 +1,5 @@
+# A source release is deliberately smaller than the development repository.
+global-exclude *
+include pyproject.toml MANIFEST.in LICENSE
+include docs/package-readme.md
+include src/djinni_mcp/*.py

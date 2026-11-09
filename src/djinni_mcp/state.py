@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
+from platformdirs import user_data_path
 
 from .source import job_id, now
 
@@ -89,7 +90,8 @@ SCHEMA = (
 
 class LocalStore:
     def __init__(self, data_dir: Path | str | None = None):
-        self.root = Path(data_dir or os.environ.get("DJINNI_MCP_DATA_DIR") or Path.cwd() / "local").expanduser().resolve()
+        self.root = Path(data_dir or os.environ.get("DJINNI_MCP_DATA_DIR")
+                         or user_data_path("djinni-mcp", appauthor=False)).expanduser().resolve()
         self.path = self.root / "state.sqlite3"
 
     @contextmanager

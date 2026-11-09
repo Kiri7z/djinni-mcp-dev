@@ -6,7 +6,9 @@ Real source observations stay in ignored local/implementation/.
 
 import asyncio
 import json
+import os
 import sys
+import sysconfig
 import tempfile
 from pathlib import Path
 
@@ -14,7 +16,7 @@ from mcp import Client, StdioServerParameters
 
 
 async def main():
-    executable = Path(sys.executable).parent / "djinni-mcp"
+    executable = Path(sysconfig.get_path("scripts")) / ("djinni-mcp.exe" if os.name == "nt" else "djinni-mcp")
     with tempfile.TemporaryDirectory() as temporary:
         await check(executable, temporary)
 

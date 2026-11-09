@@ -1,5 +1,6 @@
 """Public discovery and explicit local state tools through the official MCP SDK."""
 
+import argparse
 from typing import Annotated
 
 import httpx
@@ -137,6 +138,9 @@ def create_server(source: DjinniSource | None = None, store: LocalStore | None =
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Local MCP server for public Djinni job discovery.")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
+    parser.parse_args()
     create_server().run(transport="stdio")
 
 

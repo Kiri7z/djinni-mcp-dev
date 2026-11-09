@@ -1,10 +1,10 @@
 # Djinni MCP — development repository
 
-Public source code for inspection, development and testing. This repository contains the source installation; a download-and-run distribution is not available here yet. Publishing source enables review of the implementation; it is not a guarantee that vulnerabilities are absent.
+Public source code for inspection, development and testing. This repository supplies the source for the PyPI/uvx distribution. Prerelease 0.3.0rc1 targets PyPI distribution and independent Linux testing. Publishing source enables review of the implementation; it is not a guarantee that vulnerabilities are absent.
 
 A small local MCP server for public Djinni job discovery, a saved candidate profile and repeat-aware recommendations.
 
-Version: v0.2.1, checked on 2026-11-09. The default suite checks source behavior, saved profiles/history and actual stdio process exchanges. Research and implementation baselines are recorded separately.
+Package candidate: v0.3.0rc1, prepared on 2026-11-09. Previous accepted workflow baseline: v0.2.1. The default suite checks source behavior, saved profiles/history and actual stdio process exchanges. Research and implementation baselines are recorded separately.
 
 **Start here:** [installation, MCP connection and troubleshooting](docs/setup.md). Requires a locally running MCP client with stdio support. No Djinni login or API key is required by this server; your AI client has its own access and pricing.
 
@@ -20,25 +20,15 @@ Phase 1 is an accepted development baseline. Phase 2 follows the [simplified pla
 - `save_search`: save selected recommendations and the client's ready Markdown report.
 - `set_job_excluded`: explicitly exclude or restore a job at the user's request.
 
-Public discovery is anonymous/read-only; profile, report and exclusion changes are explicit local writes. The connected AI client handles the interview, optional document reading, matching and short drafts. There is no Djinni login, automatic application sending, document watcher, scheduler, CV parser, own LLM API or numeric scoring framework. No new runtime dependency was added for v0.2.
+Public discovery is anonymous/read-only; profile, report and exclusion changes are explicit local writes. The connected AI client handles the interview, optional document reading, matching and short drafts. There is no Djinni login, automatic application sending, document watcher, scheduler, CV parser, own LLM API or numeric scoring framework. The package candidate adds platformdirs for a persistent data location across launch directories.
 
 The [v0.1 acquisition contract](docs/tool-contract.md) and [v0.2 local workflow contract](docs/tool-contract-v0.2.md) define inputs, outputs and limits. [v0.2 verification results](docs/verification-v0.2.md) describe what was actually checked.
 
 ## Install and run
 
-Requires Python 3.11 or newer; verified on Python 3.14.7/macOS. Run in a terminal:
+End-user setup is in [the connection guide](docs/setup.md). The PyPI connection for a stdio MCP client uses command `uvx` with args `["djinni-mcp@0.3.0rc1"]`. No source checkout or development package is required.
 
-```sh
-git clone https://github.com/Kiri7z/djinni-mcp-dev.git
-cd djinni-mcp-dev
-python3 -m venv .venv
-.venv/bin/python -m pip install -c requirements.lock.txt -e .
-.venv/bin/djinni-mcp
-```
-
-The last command starts a stdio MCP server: it waits for a client and is not an interactive terminal application. Stop a manual run with Ctrl+C. Runtime dependencies are constrained to the tested environment; no browser, API key, login or Docker is required.
-
-Configure a client to launch the absolute path to `.venv/bin/djinni-mcp` (Windows: `.venv/Scripts/djinni-mcp.exe`). Set `DJINNI_MCP_DATA_DIR` to an absolute private directory and keep it stable across projects and updates. For clients that use an `mcpServers` JSON section, adapt [this placeholder example](examples/mcp.json); other clients have their own configuration format. Do not commit your actual client configuration. See [the setup guide](docs/setup.md) for Codex commands, desktop configuration, Windows installation, verification and troubleshooting. SDK-client and installed-stdio checks passed on macOS; other platforms are not verified.
+For source inspection, local changes and tests, see [developer setup](docs/development.md). The PyPI package readme is [docs/package-readme.md](docs/package-readme.md); developer instructions and tests are excluded from the installable archives.
 
 Example tool arguments:
 
@@ -56,7 +46,7 @@ Pass those arguments to `search_jobs`, then use a returned numeric ID with `get_
 
 ## Personal search workflow
 
-After updating this editable installation, restart the configured MCP server in the desktop client's MCP settings and refresh its tools. The v0.2 catalog contains eight tools. The same launch command and working directory remain valid.
+After updating the configured package version or a source installation, restart the MCP server in the client and refresh its tools. The v0.2 catalog contains eight tools. The same launch command and working directory remain valid.
 
 Start with a request such as:
 
@@ -81,7 +71,7 @@ Search keeps `matched_count` for source/title matches before local exclusions. E
 
 ## Local files
 
-With the documented project working directory, state goes to ignored `local/state.sqlite3`, and reports to `local/reports/<request_id>.md`. `DJINNI_MCP_DATA_DIR` can select another private persistent folder. Keep that location stable across chats/updates. Paths inside the installed source tree should be reviewed before a public package release.
+The default state directory is the platform-specific user-data folder listed in [setup](docs/setup.md), independent of the working directory and uv cache. It contains `state.sqlite3` and `reports/<request_id>.md`. `DJINNI_MCP_DATA_DIR` selects another private persistent folder. Existing source users should retain their explicit setting to reuse old data; no automatic discovery/migration occurs. Development and release checks use ignored `local/` or temporary directories.
 
 The database holds the questionnaire, the latest explicitly imported CV facts, last recommendation summaries and saved report payloads. `get_profile` returns only the merged effective fields to reduce repeated context. Updating a questionnaire patches named fields; null removes an override. Supplying `resume_facts` replaces the CV section. Neither action scans files.
 
@@ -114,6 +104,6 @@ See the [publication privacy boundary](docs/publication-privacy.md) before creat
 
 Candidate profiles, CVs, contact details, search preferences, authentication state, and generated private reports belong in ignored `local/` or an explicitly configured private data directory outside Git. Public examples/tests use synthetic placeholders. Never copy personal files from the parent workspace into tracked project files. Candidate facts are not sent to Djinni.
 
-See the [approved research baseline](docs/research-plan.md), [research findings and reuse decisions](docs/research.md), and [dependency notes](docs/dependencies.md). The public repository contains a reviewed source snapshot; MCP Market submission and project license selection remain pending. No third-party collector code or real job-description datasets are included.
+See the [approved research baseline](docs/research-plan.md), [research findings and reuse decisions](docs/research.md), and [dependency notes](docs/dependencies.md). The public repository contains a reviewed source snapshot; MCP Market submission remains pending. The project code is MIT licensed; see [LICENSE](LICENSE). No third-party collector code or real job-description datasets are included.
 
 The implementation uses native RSS discovery with public HTML/JSON-LD enrichment through existing parsers. Coverage and date/status ambiguity prevent a promise of exhaustive results. Existing MCP servers were not selected for unchanged adoption. See the historical [research reproduction steps](docs/research-reproduction.md).

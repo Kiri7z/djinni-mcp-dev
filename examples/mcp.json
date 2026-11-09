@@ -1,11 +1,8 @@
 {
   "mcpServers": {
     "djinni": {
-      "command": "/ABSOLUTE/PATH/TO/djinni-mcp-dev/.venv/bin/djinni-mcp",
-      "args": [],
-      "env": {
-        "DJINNI_MCP_DATA_DIR": "/ABSOLUTE/PATH/TO/PRIVATE/djinni-mcp-data"
-      }
+      "command": "uvx",
+      "args": ["djinni-mcp@0.3.0rc1"]
     }
   }
 }

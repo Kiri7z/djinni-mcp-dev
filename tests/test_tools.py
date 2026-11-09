@@ -1,7 +1,9 @@
 """Behavior checks using synthetic data; default tests make no network requests."""
 
 import json
+import os
 import sys
+import sysconfig
 import tempfile
 import unittest
 from pathlib import Path
@@ -227,7 +229,7 @@ class ProtocolTests(unittest.IsolatedAsyncioTestCase):
                     self.assertTrue(error.is_error)
 
     async def test_installed_entrypoint_stdio_and_validation(self):
-        executable=Path(sys.executable).parent/'djinni-mcp'
+        executable=Path(sysconfig.get_path('scripts')) / ('djinni-mcp.exe' if os.name == 'nt' else 'djinni-mcp')
         async with Client(StdioServerParameters(command=str(executable),
                 env={'DJINNI_MCP_DATA_DIR':str(self.data_dir)})) as client:
             self.assertEqual({t.name for t in (await client.list_tools()).tools}, TOOLS)

@@ -1,23 +1,42 @@
 [build-system]
-requires = ["setuptools>=77"]
+requires = ["setuptools==84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "djinni-public-mcp"
-version = "0.2.1"
+name = "djinni-mcp"
+version = "0.3.0rc1"
 description = "Small local MCP for public Djinni job discovery and user-managed search history"
-readme = "README.md"
+readme = "docs/package-readme.md"
 requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["mcp", "djinni", "job-search"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+]
 dependencies = [
   "mcp==2.3.0",
   "httpx==0.28.1",
   "beautifulsoup4==4.15.0",
   "defusedxml==0.7.1",
   "pydantic>=2.12,<3",
+  "platformdirs==4.14.5",
 ]
+
+[project.urls]
+Source = "https://github.com/Kiri7z/djinni-mcp-dev"
+Issues = "https://github.com/Kiri7z/djinni-mcp-dev/issues"
+Documentation = "https://github.com/Kiri7z/djinni-mcp-dev/blob/main/docs/setup.md"
 
 [project.scripts]
 djinni-mcp = "djinni_mcp.server:main"
 
+[tool.setuptools]
+include-package-data = false
+
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["djinni_mcp"]
+namespaces = false

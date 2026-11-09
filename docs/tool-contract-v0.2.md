@@ -58,7 +58,7 @@ Candidate statements in assessments and drafts default to past tense or experien
 
 ## Local data and tools
 
-Default storage is <working-directory>/local/state.sqlite3 with reports in local/reports/. An optional DJINNI_MCP_DATA_DIR environment variable selects a persistent private directory. The documented desktop setup already uses the project working directory; its current local/ remains ignored. Do not modify host settings or persist actual candidate data during development/tests. Public-distribution defaults can be reviewed at publication time.
+From package candidate 0.3.0rc1, default storage is the platform-specific user-data folder selected by platformdirs for djinni-mcp, with state.sqlite3 and reports/ inside it. DJINNI_MCP_DATA_DIR (or an explicit LocalStore path in tests) overrides that location. Existing source installations must retain/select their old data directory explicitly; the server never scans or migrates private folders automatically. Development/tests use ignored local/ or isolated temporary directories and do not change actual candidate data. See setup.md for OS-specific defaults.
 
 get_profile, get_history and get_workflow are local read-only tools. update_profile, save_search and set_job_excluded are local-write tools. Existing search_jobs/get_job retain read-only annotations. Storage/validation failures use MCP tool errors with safe messages; no SQL internals, profile bodies or upstream response bodies in errors.
 

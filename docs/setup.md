@@ -1,153 +1,75 @@
-# Install and connect Djinni MCP
+# Connect Djinni MCP
 
-This is a local stdio MCP server: your AI client launches a Python process on your computer and calls its tools. It is not a hosted HTTP service or a Djinni account integration.
+A local MCP client starts this server on your computer. No Djinni account, API key or source checkout is required.
 
-## Requirements
+**Preview version:** 0.3.0rc1. Local package checks passed on macOS with Python 3.11 and 3.14. Independent Linux acceptance is pending; see verification-v0.3.md for completed automated checks and their limits.
 
-- Git and Python 3.11 or newer, including pip and venv.
-- A local MCP client with stdio support.
-- Access to PyPI for installation and to public djinni.co pages for searches.
+## 1. Install uv once
 
-Tested: Python 3.14.7 on macOS. Windows/Linux instructions below are setup guidance, not platform acceptance claims. The constraints file records the tested dependencies, not a hash-verified cross-platform lock. Install from this repository; no PyPI release is assumed.
-
-## 1. Install from source
-
-Run in a terminal in the directory where you keep projects.
-
-### macOS or Linux
+Use the [official uv installation instructions](https://docs.astral.sh/uv/getting-started/installation/) for your OS. Confirm in a terminal:
 
 ```sh
-git clone https://github.com/Kiri7z/djinni-mcp-dev.git
-cd djinni-mcp-dev
-python3 --version
-python3 -m venv .venv
-.venv/bin/python -m pip install -c requirements.lock.txt -e .
-.venv/bin/python -m pip check
-DJINNI_REPO="$(pwd -P)"
-DJINNI_DATA_DIR="$HOME/.local/share/djinni-mcp"
-mkdir -p "$DJINNI_DATA_DIR"
-printf '%s\n' "$DJINNI_REPO/.venv/bin/djinni-mcp" "$DJINNI_DATA_DIR"
+uvx --version
 ```
 
-The last command prints the executable and private data paths for the next step. Keep the repository in place: this editable installation depends on its source folder. No virtual-environment activation is needed when using the full executable path.
+uv can obtain a compatible Python when needed under its normal download policy. Initial setup requires network access to obtain the package, dependencies and possibly Python. Searches require access to public djinni.co pages.
 
-### Windows PowerShell
+## 2. Connect your MCP client
 
-```powershell
-git clone https://github.com/Kiri7z/djinni-mcp-dev.git
-Set-Location djinni-mcp-dev
-py -3 --version
-py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -c requirements.lock.txt -e .
-.\.venv\Scripts\python.exe -m pip check
-$DjinniRepo = (Get-Location).Path
-$DjinniDataDir = Join-Path $env:LOCALAPPDATA "djinni-mcp"
-New-Item -ItemType Directory -Force -Path $DjinniDataDir | Out-Null
-Write-Output (Join-Path $DjinniRepo ".venv\Scripts\djinni-mcp.exe")
-Write-Output $DjinniDataDir
-```
-
-Check that the selected Python is at least 3.11. These commands do not require changing PowerShell execution policy.
-
-## 2. Connect one MCP client
-
-Use absolute paths, replacing placeholders with the values printed above. Do not put cd, source or export into the executable field. This server has no HTTP endpoint or OAuth login.
-
-### Codex CLI
-
-From the same terminal where the variables above were set:
-
-```sh
-codex mcp add djinni --env "DJINNI_MCP_DATA_DIR=$DJINNI_DATA_DIR" -- "$DJINNI_REPO/.venv/bin/djinni-mcp"
-codex mcp get djinni
-```
-
-PowerShell equivalent:
-
-```powershell
-codex mcp add djinni --env "DJINNI_MCP_DATA_DIR=$DjinniDataDir" -- (Join-Path $DjinniRepo ".venv\Scripts\djinni-mcp.exe")
-codex mcp get djinni
-```
-
-Restart or refresh the client connection. If djinni is already registered, inspect its configuration first and update that entry instead of creating another data directory. The command syntax follows [official Codex MCP documentation](https://developers.openai.com/codex/mcp) and was checked against local CLI help. This option requires the codex command; other desktop clients may have their own settings.
-
-### Desktop clients with MCP settings
-
-Create a local/stdio entry; labels vary by client/version:
-
-| Field | Value |
-| --- | --- |
-| Name | djinni |
-| Transport | stdio / local process |
-| Command | Full executable path from step 1 |
-| Arguments | None |
-| Environment | DJINNI_MCP_DATA_DIR = full private directory from step 1 |
-
-For clients using mcpServers JSON, merge [examples/mcp.json](../examples/mcp.json) into the existing client configuration, preserving unrelated servers. Replace both absolute path placeholders. On Windows use forward slashes in JSON paths or escape backslashes. Keep actual client configuration private.
-
-No working-directory setting is needed with an explicit DJINNI_MCP_DATA_DIR. Without it, storage defaults to local/ in the launch working directory, and different projects can appear to have different profiles.
-
-## 3. Verify the connection
-
-The client should discover **eight tools**: get_workflow, get_profile, update_profile, search_jobs, get_job, get_history, save_search and set_job_excluded.
-
-Ask your AI client, in your preferred language:
-
-> Use Djinni MCP. Read get_workflow and get_profile. If my profile is empty, ask for target roles, experience, languages, location, work format and minimum salary. Offer optional CV and achievement details, and ask whether I want application drafts. Save my answers, find five suitable jobs, describe the company and role, assess the fit and gaps, and save the report. Do not send applications.
-
-Version 0 for an empty profile is expected. The server never opens a CV itself: if you request an import, the client reads the attachment and saves selected facts.
-
-For a quick public-source check, ask the client to call search_jobs with:
+For clients with an mcpServers configuration section, merge this entry into the existing configuration:
 
 ```json
-{"category":"Sysadmin","remote_only":true,"limit":5}
+{
+  "mcpServers": {
+    "djinni": {
+      "command": "uvx",
+      "args": ["djinni-mcp@0.3.0rc1"]
+    }
+  }
+}
 ```
 
-Use get_job on returned IDs before assessing activity or eligibility. Acquisition failures are errors/unknowns, not proof of zero jobs.
+Other clients may use separate command/arguments fields. Select local/stdio transport, command `uvx`, and argument `djinni-mcp@0.3.0rc1`. Preserve unrelated server settings. A hosted-URL-only client cannot launch a local stdio process.
 
-## 4. Use and retain your profile
+If the client cannot find uvx, enter its full executable path. Find it with `command -v uvx` on macOS/Linux or `(Get-Command uvx).Source` in PowerShell. Restart/refresh the MCP connection after saving. Keep your actual client configuration private.
 
-Later requests can be short:
+## 3. Start a search
 
-- "Find five more using my saved profile."
-- "Change only my minimum salary to EXAMPLE AMOUNT monthly net."
-- "Include short application drafts in Ukrainian."
-- "Do not suggest vacancy EXAMPLE_ID again." (Replace with a returned numeric ID.)
-- "I attached a new CV; refresh the saved CV facts."
+Expected tools: get_workflow, get_profile, update_profile, search_jobs, get_job, get_history, save_search and set_job_excluded.
 
-Each recommendation has three sentences about the company and role when the vacancy supplies that information, then five about the position and candidate fit. Missing company context is marked briefly; external company research requires an explicit request. Drafts describe completed work in the past or use experience-based wording. Drafts and exclusions are explicit choices.
+Ask in your preferred language:
 
-The private data directory contains state.sqlite3 (profile, history, exclusions and saved output) and reports/ (Markdown copies). Only selected recommendations are saved, not every fetched vacancy. Retain the data-directory setting across updates. There is no document watcher, automatic application sending or background schedule.
+> Use Djinni MCP to find five suitable jobs. Read the workflow and my saved profile first. Ask for missing preferences, offer optional CV and achievement details, and ask whether I want application drafts. Save the recommendations and report. Do not send applications.
 
-## 5. Update and test
+The AI client does matching and writes assessments. A CV is read by that client only when you request it; the server never opens CV files. Later you can ask for more jobs using the saved profile, change individual preferences, or exclude a vacancy explicitly.
 
-Stop the MCP connection before updating, run from the repository directory, then restart the connection:
+## Data and updates
 
-```sh
-git pull --ff-only
-.venv/bin/python -m pip install -c requirements.lock.txt -e .
-.venv/bin/python -m unittest discover -s tests -v
-.venv/bin/python -m pip check
-```
+| OS | Default private data folder |
+| --- | --- |
+| macOS | `~/Library/Application Support/djinni-mcp` |
+| Linux | `$XDG_DATA_HOME/djinni-mcp`, or `~/.local/share/djinni-mcp` when unset |
+| Windows | `%LOCALAPPDATA%/djinni-mcp` |
 
-On Windows use .\.venv\Scripts\python.exe instead of .venv/bin/python. Default tests use synthetic source responses and isolated temporary state. The optional live smoke test is in [README](../README.md#verify). Code updates do not require rereading the CV or resetting private state.
+The folder holds state.sqlite3 and reports/ and is independent of the working directory, release version and uv cache. Reads of an empty profile do not create it. Back up the folder while the MCP process is stopped.
+
+Optional: set the environment variable DJINNI_MCP_DATA_DIR in your MCP client to a private absolute directory. Existing source-install users should retain that setting to reuse their existing data. There is no automatic search for old data or migration. A first packaged run may therefore show an empty profile until you explicitly select the old data directory.
+
+Update by changing the configured package version and restarting the connection. Pinned versions avoid implicit application upgrades; dependencies are still resolved from the package requirements. Do not reset your data or reread your CV merely to update the program.
 
 ## Troubleshooting
 
 | Symptom | Check |
 | --- | --- |
-| Running djinni-mcp waits silently | Expected: stdio waits for the MCP client. Ctrl+C stops a manual launch; configure the executable in your client. |
-| Executable not found | Use the full venv executable path; keep the repository and venv in place. |
-| Dependency installation failure | Check Python version and the exact pip error. Do not bypass failures with --no-deps; this pinned environment was not verified on every platform. |
-| Profile unexpectedly empty | Compare DJINNI_MCP_DATA_DIR across clients/projects before re-entering private data. |
-| Old workflow or missing tools | Restart MCP, refresh tools and read get_workflow again; expect eight tools. |
-| Permission denied saving data | Choose a private writable data directory; do not elevate the whole AI client unnecessarily. |
-| HTTP 403, timeout or changed source page | The public source can block/change. Retry later; do not infer vacancy closure from an acquisition failure. |
-| Fewer results than requested | Exclusions and the bounded RSS window can reduce results. Continue next_offset if available; do not silently widen required criteria. |
-| Repeated recommendation | Repeats are allowed and dated; explicitly exclude the numeric ID if unwanted. |
+| uvx not found | Install uv, restart the client, or use the full uvx executable path. |
+| Version not found | Check the configured version and PyPI/network availability; prereleases must be selected explicitly. |
+| Manual launch waits silently | Expected: it waits for an MCP client. Ctrl+C stops a manual run. Use --version for a non-server check. |
+| Profile appears empty | Compare DJINNI_MCP_DATA_DIR and the default data folder across clients; do not overwrite old data. |
+| Missing tools or old guidance | Restart/refresh the MCP connection; expect eight tools. |
+| Installation fails | Check network access and the exact Python/dependency error; do not silently bypass dependencies. |
+| HTTP 403/timeout | Public Djinni access can fail or change. Failure does not prove no jobs exist or a vacancy closed. |
+| Fewer results than requested | RSS coverage is bounded/unknown and explicit local exclusions can reduce the result count. |
 
-## Privacy and limits
+Source inspection and development instructions are in [development.md](development.md). Release preparation and PyPI account linking are in [release.md](release.md).
 
-No Djinni credentials, browser session or personal API key belongs in this repository. Candidate data stays in the configured private directory and is returned to your AI client, which may process it under that provider's policy. This implementation does not submit candidate facts to Djinni. SQLite is ordinary local storage, not an encrypted vault.
-
-Do not attach populated data directories or actual MCP configuration to issues. Use synthetic examples and redact local user paths. Source coverage is unknown, remote does not imply worldwide eligibility, and absent salary remains unknown. See [publication privacy](publication-privacy.md), [tool contract](tool-contract-v0.2.md) and [verification evidence](verification-v0.2.md).
+Candidate data is returned to the chosen AI client and may be processed by its provider. It is not submitted to Djinni by this implementation. SQLite is not encrypted; uvx dependency isolation is not an OS security sandbox. Do not attach populated data folders, CVs, real client configurations or credentials to issues.
