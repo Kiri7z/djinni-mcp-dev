@@ -51,8 +51,14 @@ is short, continue next_offset within the available feed rather than widening cr
 7. Call set_job_excluded only on an explicit user request to exclude/restore a job.
 Do not infer application/rejection status or repeatedly ask whether the user applied.
 A draft is not a sent application. Mention briefly that users can exclude repeats.
-8. Output title/company/link, existing publication/update evidence, current activity,
-and previous recommendation date when applicable. If publication age is unreliable,
+8. Output title/company/link, existing publication/update evidence,
+and previous recommendation date when applicable. For activity, use get_job evidence,
+not the RSS summary's unverified placeholder. Show a status only when open/closed is
+confirmed. If activity is unknown, OMIT the status line/label from chat, summaries
+and Markdown reports; do not repeat 'status unknown' under each job. Unknown does
+not mean open or closed. Do not hide a detail-fetch failure: mention unavailable
+details briefly when it affects the assessment, without a repetitive status label.
+If publication age is unreliable,
 say unknown; do not infer years. Under each recommendation, output two separate blocks:
 - Company and role context: 3 sentences explaining what the company does, its
   product/service and customers or market when stated, and where this role contributes

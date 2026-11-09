@@ -215,3 +215,12 @@ Client wording is instruction-driven, not deterministic model execution. Existin
 
 
 The owner also requested an update lifecycle. Reuse the already verified tag-triggered GitHub release workflow: reviewed public source commit and matching new package version/tag, then build, six platform/Python checks and Trusted Publishing to PyPI. No new service, dependency, credentials or custom release framework is needed. Normal commits do not upload a package, private laptop history is never automatically pushed, and existing PyPI versions are not overwritten. Users change the pinned argument and restart MCP; instruction changes also require a fresh chat or get_workflow refresh. The current storage schema/data directory remains compatible.
+
+
+## 20. Stable release and unknown-status presentation — 2026-11-09
+
+The owner confirmed that 0.3.0rc2 works in the independent Fedora client, requested a normal stable release without preview/testing text in the user description, and reported repetitive unknown status labels. Select stable version 0.3.0, retaining the existing uv/setuptools/official-SDK/Trusted Publishing release path and licenses. No new tool, library, service, protocol, parser or storage schema is needed.
+
+Inspection confirms that RSS summaries deliberately carry unknown activity, while get_job can return open/closed only when its existing public-page evidence is sufficient (matching JobPosting plus apply UI, or the explicit closed notice). Do not remove uncertainty from the raw contract or claim unknown means open. Use get_job rather than the RSS placeholder for any displayed status. Omit unknown activity labels from normal chat/Markdown recommendations, but retain confirmed statuses and transparent detail-fetch failures; preserve existing unknown salary/location/date behavior. Reuse the bundled workflow and SDK instructions for this presentation change; do not expand source-detection heuristics on unverified assumptions.
+
+Keep historical release/verification notes in developer documentation. The shipped package description and connection guide should focus on normal installation/use and meaningful source/privacy limits, not development-phase commentary. Run existing source/state/protocol checks, review the selected source before building and both archives afterward, and publish only through the tested tag pipeline. Client rendering remains model-driven and requires normal client acceptance after instruction refresh.

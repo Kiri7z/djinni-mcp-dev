@@ -90,3 +90,12 @@ Downloaded PyPI files matched the CI manifest hashes exactly. Their runtime modu
 | `djinni_mcp-0.3.0rc2.tar.gz` | `dd86518e38550d1994df927e31c56c0bd6aeaaa96a103e1d0ceb9bfc9320e2b4` |
 
 The version-update pipeline is already operational: source/tag -> tests -> a new PyPI version, without overwriting old releases. Users update the pinned argument and restart MCP; a new chat or explicit get_workflow reread is needed for instruction refresh. Ready-message generation by the user's AI client still needs a repeat acceptance run; transport/state tests do not synthesize that behavior. Profile storage and schema are unchanged.
+
+
+## Stable 0.3.0 — preparation and acceptance
+
+On 2026-11-09 the owner confirmed that 0.3.0rc2 works in the independent Fedora client, including the updated drafting workflow, and authorized a stable release. Stable 0.3.0 removes preview/testing-phase commentary from the package description and user connection guide and uses the Production/Stable package classifier.
+
+The owner also requested removal of repetitive unknown-status labels. A fresh bounded anonymous live check returned two open and one closed detail result. The existing detail path can therefore confirm some statuses; RSS summaries intentionally cannot. No source heuristics or raw activity schema changed. New client guidance displays only confirmed get_job status and omits unknown activity labels from chat/summaries/Markdown. Unknown is never converted to open, material detail-fetch failures remain transparent, and other missing salary/location/date handling is preserved.
+
+Local checks: 27 existing source/state/SDK tests passed, including open/closed/unknown distinctions and source failures. The stable wheel/sdist passed exact-content, personal-path/email, secret-scan and strict metadata checks. Real uvx stdio checks passed on Python 3.11/3.14; profile/history/exclusion/report persistence is unchanged. Historical verification remains above for audit. Stable CI/publication evidence will be recorded separately after upload; instruction-driven status rendering remains client behavior rather than a server-generated report formatter.

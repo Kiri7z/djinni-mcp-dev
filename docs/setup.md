@@ -2,11 +2,9 @@
 
 A local MCP client starts this server on your computer. No Djinni account, API key or source checkout is required.
 
-**Preview version:** 0.3.0rc2, with ready Ukrainian application drafts enabled by default. Local package checks passed on macOS with Python 3.11 and 3.14. Independent Linux acceptance is pending; see verification-v0.3.md for completed automated checks and their limits.
-
 ## 1. Install uv once
 
-Use the [official uv installation instructions](https://docs.astral.sh/uv/getting-started/installation/) for your OS. Confirm in a terminal:
+Use the [official uv installation instructions](https://docs.astral.sh/uv/getting-started/installation/) for your OS. Fedora users can install the [distribution package](https://packages.fedoraproject.org/pkgs/uv/uv/) with `sudo dnf install uv`. Confirm in a terminal:
 
 ```sh
 uvx --version
@@ -23,13 +21,13 @@ For clients with an mcpServers configuration section, merge this entry into the 
   "mcpServers": {
     "djinni": {
       "command": "uvx",
-      "args": ["djinni-mcp@0.3.0rc2"]
+      "args": ["djinni-mcp@0.3.0"]
     }
   }
 }
 ```
 
-Other clients may use separate command/arguments fields. Select local/stdio transport, command `uvx`, and argument `djinni-mcp@0.3.0rc2`. Preserve unrelated server settings. A hosted-URL-only client cannot launch a local stdio process.
+Other clients may use separate command/arguments fields. Select local/stdio transport, command `uvx`, and argument `djinni-mcp@0.3.0`. Preserve unrelated server settings. A hosted-URL-only client cannot launch a local stdio process.
 
 If the client cannot find uvx, enter its full executable path. Find it with `command -v uvx` on macOS/Linux or `(Get-Command uvx).Source` in PowerShell. Restart/refresh the MCP connection after saving. Keep your actual client configuration private.
 
@@ -62,7 +60,7 @@ Update by changing the configured package version and restarting the connection.
 | Symptom | Check |
 | --- | --- |
 | uvx not found | Install uv, restart the client, or use the full uvx executable path. |
-| Version not found | Check the version and PyPI/network availability. Right after a release, retry once in a terminal with `uvx --refresh djinni-mcp@0.3.0rc2 --version`, then restart MCP; prereleases must be selected explicitly. |
+| Version not found | Check the version and PyPI/network availability. Right after a release, retry once in a terminal with `uvx --refresh djinni-mcp@0.3.0 --version`, then restart MCP. |
 | Manual launch waits silently | Expected: it waits for an MCP client. Ctrl+C stops a manual run. Use --version for a non-server check. |
 | Profile appears empty | Compare DJINNI_MCP_DATA_DIR and the default data folder across clients; do not overwrite old data. |
 | Missing tools or old guidance | Restart/refresh the MCP connection; expect eight tools. |
@@ -75,3 +73,5 @@ Source inspection and development instructions are in [development.md](developme
 Candidate data is returned to the chosen AI client and may be processed by its provider. It is not submitted to Djinni by this implementation. SQLite is not encrypted; uvx dependency isolation is not an OS security sandbox. Do not attach populated data folders, CVs, real client configurations or credentials to issues.
 
 Application drafts are included by default in Ukrainian. To change this, request another draft language or opt out explicitly; the client can save that preference. A language chosen for the current request takes priority over the saved draft language. Changing the chat/report language alone does not change the Ukrainian fallback. No application is sent automatically.
+
+Status labels appear only when a public detail page confirms that a vacancy is open or closed. An unavailable status is omitted; it is never treated as proof that the job is active.

@@ -1,10 +1,10 @@
 # Djinni MCP — development repository
 
-Public source code for inspection, development and testing. This repository supplies the source for the PyPI/uvx distribution. Published prerelease [0.3.0rc2](https://pypi.org/project/djinni-mcp/0.3.0rc2/) enables ready Ukrainian application drafts by default. Independent Fedora feedback confirmed installation, onboarding and public discovery in 0.3.0rc1; draft-default acceptance is pending. Publishing source enables review of the implementation; it is not a guarantee that vulnerabilities are absent.
+Source code for Djinni MCP, distributed as a ready-to-run PyPI package. Version 0.3.0 is the first stable release following independent Fedora acceptance. Ready Ukrainian application drafts are included by default; explicit opt-outs and language choices take priority. The source remains available for inspection, development and testing.
 
 A small local MCP server for public Djinni job discovery, a saved candidate profile and repeat-aware recommendations.
 
-Package candidate: v0.3.0rc2, prepared on 2026-11-09. Previous accepted workflow baseline: v0.2.1. The default suite checks source behavior, saved profiles/history and actual stdio process exchanges. Research and implementation baselines are recorded separately.
+Stable package: v0.3.0. Previous implementation and release checks are recorded in the verification documents. The default suite checks source behavior, saved profiles/history and actual stdio process exchanges. Research and implementation baselines are recorded separately.
 
 **Start here:** [installation, MCP connection and troubleshooting](docs/setup.md). Requires a locally running MCP client with stdio support. No Djinni login or API key is required by this server; your AI client has its own access and pricing.
 
@@ -20,13 +20,13 @@ Phase 1 is an accepted development baseline. Phase 2 follows the [simplified pla
 - `save_search`: save selected recommendations and the client's ready Markdown report.
 - `set_job_excluded`: explicitly exclude or restore a job at the user's request.
 
-Public discovery is anonymous/read-only; profile, report and exclusion changes are explicit local writes. The connected AI client handles the interview, optional document reading, matching and short drafts. There is no Djinni login, automatic application sending, document watcher, scheduler, CV parser, own LLM API or numeric scoring framework. The package candidate adds platformdirs for a persistent data location across launch directories.
+Public discovery is anonymous/read-only; profile, report and exclusion changes are explicit local writes. The connected AI client handles the interview, optional document reading, matching and short drafts. There is no Djinni login, automatic application sending, document watcher, scheduler, CV parser, own LLM API or numeric scoring framework. The package uses platformdirs for a persistent data location across launch directories.
 
 The [v0.1 acquisition contract](docs/tool-contract.md) and [v0.2 local workflow contract](docs/tool-contract-v0.2.md) define inputs, outputs and limits. [v0.2 workflow verification](docs/verification-v0.2.md) and [v0.3 package/publication verification](docs/verification-v0.3.md) describe completed checks and limits.
 
 ## Install and run
 
-End-user setup is in [the connection guide](docs/setup.md). The PyPI connection for a stdio MCP client uses command `uvx` with args `["djinni-mcp@0.3.0rc2"]`. No source checkout or development package is required.
+End-user setup is in [the connection guide](docs/setup.md). The PyPI connection for a stdio MCP client uses command `uvx` with args `["djinni-mcp@0.3.0"]`. No source checkout or development package is required.
 
 For source inspection, local changes and tests, see [developer setup](docs/development.md). The PyPI package readme is [docs/package-readme.md](docs/package-readme.md); developer instructions and tests are excluded from the installable archives.
 
@@ -61,7 +61,7 @@ The client reads a CV using its existing attachment tools only when asked, then 
 - "I uploaded a new CV; reread it" — explicitly refresh the CV facts; questionnaire overrides still win.
 - "Don't suggest this job again" — exclude that ID; "restore it" reverses the exclusion.
 
-Repeats are allowed and show `previously_recommended_at`. `get_history` supplies their last saved assessments. These are historical context, not an automatic freshness guarantee. Unknown publication age stays unknown; date extraction is unchanged. Each recommendation has two blocks: three sentences about the company's business/product and the role's place in it, then five sentences about the position and candidate fit/gaps/conditions, plus a ready 3–5-sentence draft unless explicitly declined. Company context comes only from the vacancy details: absent or unclear information is marked briefly without padding or guesses, and no web search or company-site visit is made unless the user asks for research. Both blocks are saved in the recommendation summary and Markdown report. Exact phrasing/tool selection remains client/model behavior and needs a manual acceptance run.
+Repeats are allowed and show `previously_recommended_at`. `get_history` supplies their last saved assessments. These are historical context, not an automatic freshness guarantee. Unknown publication age stays unknown; date extraction is unchanged. Each recommendation has two blocks: three sentences about the company's business/product and the role's place in it, then five sentences about the position and candidate fit/gaps/conditions, plus a ready 3–5-sentence draft unless explicitly declined. Company context comes only from the vacancy details: absent or unclear information is marked briefly without padding or guesses, and no web search or company-site visit is made unless the user asks for research. Both blocks are saved in the recommendation summary and Markdown report. Exact phrasing/tool selection remains client/model behavior. Independent Fedora feedback confirmed the default-draft workflow.
 
 Ready application drafts are included by default: an unset `prepare_drafts` enables them, while an explicit saved `no` disables them. Explicit instructions for the current request take priority. Each enabled recommendation includes the actual message in a blockquote, saved in both the structured draft field and Markdown report; an offer to prepare it later is insufficient. Draft language is the explicit current request language, then the saved `draft_language`, then Ukrainian. It is independent of `output_language`, and missing language never blocks a draft. A one-request exception does not silently change saved preferences. Drafts use only supplied experience/achievements; sample-letter claims are never imported as candidate facts.
 
@@ -96,7 +96,7 @@ Live observations are written to ignored `local/implementation/live-smoke.json`.
 
 ## Purpose
 
-Provide consistent, compact job-search results while reducing repeated browsing and unnecessary model context. This public repository is a portfolio project, not a commercial product launch. An MCP Market listing is possible future work.
+Provide consistent, compact job-search results while reducing repeated browsing and unnecessary model context. An MCP Market listing is possible future work.
 
 ## Privacy
 
@@ -107,3 +107,5 @@ Candidate profiles, CVs, contact details, search preferences, authentication sta
 See the [approved research baseline](docs/research-plan.md), [research findings and reuse decisions](docs/research.md), and [dependency notes](docs/dependencies.md). The public repository contains a reviewed source snapshot; MCP Market submission remains pending. The project code is MIT licensed; see [LICENSE](LICENSE). No third-party collector code or real job-description datasets are included.
 
 The implementation uses native RSS discovery with public HTML/JSON-LD enrichment through existing parsers. Coverage and date/status ambiguity prevent a promise of exhaustive results. Existing MCP servers were not selected for unchanged adoption. See the historical [research reproduction steps](docs/research-reproduction.md).
+
+Normal recommendations display activity only when get_job confirms open/closed status. Unknown activity labels are omitted from chat and reports; raw tool uncertainty remains available and is never converted into an active-status claim.

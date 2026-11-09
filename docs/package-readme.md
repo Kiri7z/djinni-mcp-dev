@@ -2,8 +2,6 @@
 
 Find public Djinni jobs from a local MCP client, keep your search preferences, and save recommendations without repeatedly entering your profile.
 
-**Preview release:** 0.3.0rc2 updates application-draft defaults following independent Fedora testing. Local package checks passed on macOS with Python 3.11 and 3.14. Independent Linux acceptance and Windows acceptance remain separate from automated checks.
-
 ## Connect
 
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) once. In an MCP client that supports local stdio servers and `mcpServers` configuration, add:
@@ -13,7 +11,7 @@ Install [uv](https://docs.astral.sh/uv/getting-started/installation/) once. In a
   "mcpServers": {
     "djinni": {
       "command": "uvx",
-      "args": ["djinni-mcp@0.3.0rc2"]
+      "args": ["djinni-mcp@0.3.0"]
     }
   }
 }
@@ -27,16 +25,16 @@ Restart the MCP connection and ask:
 
 ## What it does
 
-- Searches public Djinni vacancies and reads their current public details.
+- Searches public Djinni vacancies and reads their public details.
 - Reuses your explicitly saved profile, labels previous recommendations and supports manual exclusions.
 - Saves recommendation history in SQLite and readable Markdown reports.
 - Supplies guidance for company context, candidate fit and ready drafts to your AI client.
 
-Your AI client performs matching and writes summaries. Company context comes from vacancy text; external company research requires your request. Public-source coverage is limited/unknown, and a remote vacancy may still restrict eligible countries.
+Your AI client performs matching and writes summaries. Company context comes from vacancy text; external company research requires your request. Search covers publicly accessible vacancies and may not include every listing. Remote vacancies may still restrict eligible countries.
 
 ## Your data
 
-The server creates private state only when you ask it to save or update data. Default data folders are:
+Your profile and search history are stored locally when you ask the client to save or update them. Default data folders are:
 
 | OS | Default location |
 | --- | --- |
@@ -52,10 +50,12 @@ There is no Djinni account access, document scanning, automatic application send
 
 Expected tools: `get_workflow`, `get_profile`, `update_profile`, `search_jobs`, `get_job`, `get_history`, `save_search`, `set_job_excluded`.
 
-`uvx djinni-mcp@0.3.0rc2 --version` prints the release version. Starting without arguments waits for an MCP client; it is not an interactive terminal interface.
+`uvx djinni-mcp@0.3.0 --version` prints the release version. Starting without arguments waits for an MCP client; it is not an interactive terminal interface.
 
 The [public source repository](https://github.com/Kiri7z/djinni-mcp-dev) contains the implementation and tests. Published wheels contain readable Python source; download and inspect the actual release as well as its source tag. Open source and provenance records help review but do not guarantee safety. The code is MIT licensed; dependency licenses and Djinni content are separate.
 
 See [connection and troubleshooting](https://github.com/Kiri7z/djinni-mcp-dev/blob/main/docs/setup.md). Report problems using synthetic examples, without CVs, populated data folders, credentials or personal paths.
 
 Application drafts are included by default in Ukrainian. To change this, request another draft language or opt out explicitly; the client can save that preference. A language chosen for the current request takes priority over the saved draft language. Changing the chat/report language alone does not change the Ukrainian fallback. No application is sent automatically.
+
+Vacancy status is shown only when confirmed by the public detail page. Unavailable status is omitted from recommendations instead of repeating an unknown-status label.
