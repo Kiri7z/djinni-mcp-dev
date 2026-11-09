@@ -2,7 +2,7 @@
   "mcpServers": {
     "djinni": {
       "command": "uvx",
-      "args": ["djinni-mcp@0.3.0rc1"]
+      "args": ["djinni-mcp@0.3.0rc2"]
     }
   }
 }

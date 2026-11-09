@@ -67,3 +67,12 @@ An extra offline-only probe initially lacked a wheel for the interpreter selecte
 | `djinni_mcp-0.3.0rc1.tar.gz` | `0fe6a9a9b818474c15387eaea422814907040831a1196fa7dc5a0d388891af34` |
 
 Remaining: the owner's independent Linux PC test, any additional client/Windows manual acceptance, stable release and MCP Market listing. Automated Linux CI does not replace the independent test. Raw API/provenance/signature logs and the publication receipt remain under ignored local/release/0.3.0rc1/.
+
+
+## 0.3.0rc2 draft-default update — local preparation, 2026-11-09
+
+Independent Fedora feedback confirmed that 0.3.0rc1 installed, collected the CV/conditions and found three vacancies, but offered to prepare messages later. This is consistent with the former unset-preference offer branch; the actual Linux profile was not accessed here. The owner selected ready drafts by default and Ukrainian as the fallback language.
+
+The existing workflow and server guidance now include an actual 3–5-sentence message per suitable vacancy without another confirmation when preferences are unset. Explicit per-request instructions take priority, then saved prepare_drafts/draft_language, then enabled/Ukrainian defaults. A saved opt-out is retained. Chat/report language does not determine the draft fallback. No storage schema, candidate data, source collector, dependencies or automatic sending behavior changed.
+
+Local validation: 27 existing tests passed; built wheel/sdist passed exact artifact/metadata/privacy checks; uvx real-stdio checks passed with Python 3.11 and 3.14. The actual get_workflow response exposed the new defaults, reading an empty profile did not fabricate settings, and explicit no/English settings persisted across processes. These checks validate transport/state/guidance exposure; they do not simulate or guarantee the AI client's final drafted prose. Retest the drafted output in a new chat or explicitly reload get_workflow after changing package version and restarting MCP. Release CI, PyPI publication and end-user draft acceptance are pending at this preparation point.

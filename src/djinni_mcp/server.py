@@ -22,8 +22,9 @@ def create_server(source: DjinniSource | None = None, store: LocalStore | None =
     server = MCPServer(
         "Djinni Job Search", version=__version__, log_level="WARNING",
         instructions="Read get_workflow/get_profile once for job search. Initial onboarding has four items, "
-        "including optional CV and achievements. Ask draft preference/language; include enabled drafts "
-        "or offer once if undecided. Reuse the profile; refresh CV/criteria only when asked. "
+        "including optional CV and achievements. Include ready application drafts by default in Ukrainian; "
+        "honor explicit opt-outs and requested/saved draft languages. Missing preferences never block drafts. "
+        "Reuse the profile; refresh CV/criteria only when asked. "
         "Questionnaire overrides CV. Use get_job before recommending, label repeats, save output. "
         "Use 3 company/role-context sentences plus 5 position/fit sentences per job; company facts "
         "come only from the vacancy. Mark missing context; no external company research unless asked. "
@@ -90,7 +91,7 @@ def create_server(source: DjinniSource | None = None, store: LocalStore | None =
     @server.tool(annotations=local_read)
     async def get_workflow() -> str:
         """Read once when starting job search: four-item initial interview including
-        optional CV/achievements, profile reuse, repeat labels and application draft/offer rules.
+        optional CV/achievements, profile reuse, repeat labels and default Ukrainian application drafts.
         """
         return WORKFLOW
 

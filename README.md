@@ -1,10 +1,10 @@
 # Djinni MCP — development repository
 
-Public source code for inspection, development and testing. This repository supplies the source for the PyPI/uvx distribution. Prerelease [0.3.0rc1 is available on PyPI](https://pypi.org/project/djinni-mcp/0.3.0rc1/); independent Linux acceptance remains pending. Publishing source enables review of the implementation; it is not a guarantee that vulnerabilities are absent.
+Public source code for inspection, development and testing. This repository supplies the source for the PyPI/uvx distribution. Prerelease 0.3.0rc2 enables ready Ukrainian application drafts by default. Independent Fedora feedback confirmed installation, onboarding and public discovery in 0.3.0rc1; draft-default acceptance is pending. Publishing source enables review of the implementation; it is not a guarantee that vulnerabilities are absent.
 
 A small local MCP server for public Djinni job discovery, a saved candidate profile and repeat-aware recommendations.
 
-Package candidate: v0.3.0rc1, prepared on 2026-11-09. Previous accepted workflow baseline: v0.2.1. The default suite checks source behavior, saved profiles/history and actual stdio process exchanges. Research and implementation baselines are recorded separately.
+Package candidate: v0.3.0rc2, prepared on 2026-11-09. Previous accepted workflow baseline: v0.2.1. The default suite checks source behavior, saved profiles/history and actual stdio process exchanges. Research and implementation baselines are recorded separately.
 
 **Start here:** [installation, MCP connection and troubleshooting](docs/setup.md). Requires a locally running MCP client with stdio support. No Djinni login or API key is required by this server; your AI client has its own access and pricing.
 
@@ -26,7 +26,7 @@ The [v0.1 acquisition contract](docs/tool-contract.md) and [v0.2 local workflow 
 
 ## Install and run
 
-End-user setup is in [the connection guide](docs/setup.md). The PyPI connection for a stdio MCP client uses command `uvx` with args `["djinni-mcp@0.3.0rc1"]`. No source checkout or development package is required.
+End-user setup is in [the connection guide](docs/setup.md). The PyPI connection for a stdio MCP client uses command `uvx` with args `["djinni-mcp@0.3.0rc2"]`. No source checkout or development package is required.
 
 For source inspection, local changes and tests, see [developer setup](docs/development.md). The PyPI package readme is [docs/package-readme.md](docs/package-readme.md); developer instructions and tests are excluded from the installable archives.
 
@@ -50,9 +50,9 @@ After updating the configured package version or a source installation, restart 
 
 Start with a request such as:
 
-> Use Djinni MCP. Read get_workflow and my saved profile. If essential criteria are missing, ask me once and save my answers. Then find five suitable jobs, show a short assessment and optional draft, label previous recommendations with their date, and save the report.
+> Use Djinni MCP. Read get_workflow and my saved profile. If essential criteria are missing, ask me once and save my answers. Then find five suitable jobs, show a short assessment and ready Ukrainian application draft unless I decline, label previous recommendations with their date, and save the report.
 
-For a new profile the initial interview explicitly has four items: roles/experience/languages; work conditions/geography/salary; an optional CV invitation; optional significant projects/achievements. It also asks whether to include short application drafts and in which language. Skipping the optional items does not block search. Existing profiles are reused without repeating the interview.
+For a new profile the initial interview explicitly has four items: roles/experience/languages; work conditions/geography/salary; an optional CV invitation; optional significant projects/achievements. It states that ready application drafts are included in Ukrainian by default; users may choose another language or opt out without blocking search. Skipping the optional items does not block search. Existing profiles are reused without repeating the interview.
 
 The client reads a CV using its existing attachment tools only when asked, then saves concise facts with `update_profile(resume_facts=...)`. No CV file is opened by this server. Later requests reuse the saved profile:
 
@@ -61,9 +61,9 @@ The client reads a CV using its existing attachment tools only when asked, then 
 - "I uploaded a new CV; reread it" — explicitly refresh the CV facts; questionnaire overrides still win.
 - "Don't suggest this job again" — exclude that ID; "restore it" reverses the exclusion.
 
-Repeats are allowed and show `previously_recommended_at`. `get_history` supplies their last saved assessments. These are historical context, not an automatic freshness guarantee. Unknown publication age stays unknown; date extraction is unchanged. Each recommendation has two blocks: three sentences about the company's business/product and the role's place in it, then five sentences about the position and candidate fit/gaps/conditions, plus an optional 3–5-sentence draft. Company context comes only from the vacancy details: absent or unclear information is marked briefly without padding or guesses, and no web search or company-site visit is made unless the user asks for research. Both blocks are saved in the recommendation summary and Markdown report. Exact phrasing/tool selection remains client/model behavior and needs a manual acceptance run.
+Repeats are allowed and show `previously_recommended_at`. `get_history` supplies their last saved assessments. These are historical context, not an automatic freshness guarantee. Unknown publication age stays unknown; date extraction is unchanged. Each recommendation has two blocks: three sentences about the company's business/product and the role's place in it, then five sentences about the position and candidate fit/gaps/conditions, plus a ready 3–5-sentence draft unless explicitly declined. Company context comes only from the vacancy details: absent or unclear information is marked briefly without padding or guesses, and no web search or company-site visit is made unless the user asks for research. Both blocks are saved in the recommendation summary and Markdown report. Exact phrasing/tool selection remains client/model behavior and needs a manual acceptance run.
 
-When `prepare_drafts` is yes or the user requests drafts, each recommendation includes a ready message in a blockquote, saved in both the structured draft field and Markdown report. `draft_language` can differ from `output_language`. If preference is unset, the client makes one explicit offer after the first shortlist; if no, it omits drafts and repeat offers. Drafts use only supplied experience/achievements; sample-letter claims are never imported as candidate facts.
+Ready application drafts are included by default: an unset `prepare_drafts` enables them, while an explicit saved `no` disables them. Explicit instructions for the current request take priority. Each enabled recommendation includes the actual message in a blockquote, saved in both the structured draft field and Markdown report; an offer to prepare it later is insufficient. Draft language is the explicit current request language, then the saved `draft_language`, then Ukrainian. It is independent of `output_language`, and missing language never blocks a draft. A one-request exception does not silently change saved preferences. Drafts use only supplied experience/achievements; sample-letter claims are never imported as candidate facts.
 
 Candidate wording in assessments and drafts defaults to past tense or experience-based phrases such as "I led a team" and "I have experience managing infrastructure". Completed achievements stay in the past. Historical team sizes and duties are not presented as ongoing unless the user explicitly confirms the specific current scope; an old CV's present tense or a current title alone is insufficient. This wording does not imply that employment ended and does not rewrite saved profiles or historical reports. The rule applies in all output languages.
 

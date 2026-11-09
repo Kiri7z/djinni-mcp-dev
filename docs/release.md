@@ -4,11 +4,11 @@ This is maintainer documentation. Users only need [setup.md](setup.md).
 
 ## Release identity
 
-- PyPI project: `djinni-mcp` ([published prerelease](https://pypi.org/project/djinni-mcp/0.3.0rc1/)).
+- PyPI project: `djinni-mcp` ([PyPI releases](https://pypi.org/project/djinni-mcp/)).
 - Console command: `djinni-mcp`.
 - Public source: `Kiri7z/djinni-mcp-dev`.
-- Candidate package version: `0.3.0rc1`.
-- Required matching source tag: `v0.3.0rc1`.
+- Candidate package version: `0.3.0rc2`.
+- Required matching source tag: `v0.3.0rc2`.
 - License: MIT, with a project/contributors identity and no personal email metadata.
 
 The source repository is not a separate runtime dependency. Installable archives contain runtime Python modules, package metadata, the MIT license and the user-facing package description. Developer instructions, agent files, tests, private data and Git history are excluded by the distribution allowlist.
@@ -23,7 +23,7 @@ Use the existing source development environment or a separate temporary environm
 
 ```sh
 uv build --no-sources --out-dir local/release/dist
-python scripts/check_dist.py local/release/dist --tag v0.3.0rc1
+python scripts/check_dist.py local/release/dist --tag v0.3.0rc2
 python -m twine check --strict local/release/dist/*
 ```
 
@@ -63,4 +63,11 @@ The prepared `.github/workflows/release.yml` uses commit-pinned existing actions
 
 The PyPA publishing action produces PyPI publish attestations. These verify publisher identity/workflow for a file digest; they do not certify harmless code or a reproducible build. Users can inspect the readable Python in the actual wheel and compare it with the tagged source. Optional stronger build/source attestations can be considered separately; no custom signing system is implemented.
 
-After upload, verify the PyPI project metadata, source link, file hashes, version, license and provenance display. Then perform a genuinely fresh PyPI `uvx djinni-mcp@0.3.0rc1 --version` and MCP smoke test rather than a local-file/cached-only test. Pin the explicit prerelease in the Linux test configuration. Incorporate the owner's independent result before publishing a stable version or an MCP Market listing.
+After upload, verify the PyPI project metadata, source link, file hashes, version, license and provenance display. Then perform a genuinely fresh PyPI `uvx djinni-mcp@0.3.0rc2 --version` and MCP smoke test rather than a local-file/cached-only test. Pin the explicit prerelease in the Linux test configuration. Incorporate the owner's independent result before publishing a stable version or an MCP Market listing.
+
+
+## Update lifecycle
+
+A normal source commit does not publish a package. Review changes and privacy, assign a new package version, update its connection examples, publish the reviewed public commit, then create the matching vVERSION release tag. The existing workflow builds and tests that tag and uploads a new PyPI version only after all jobs pass. Existing PyPI release files are not overwritten and the workflow does not skip a version conflict silently.
+
+Users pin the desired version in their MCP arguments and restart the server after changing it. For bundled workflow/instruction changes, begin a new chat or explicitly read get_workflow again, because an existing conversation may retain the older instructions. Keep the same data directory; a code update does not require a CV refresh or re-entering a profile. Future storage-schema changes require their own compatibility review; the 0.3.0rc2 draft-default update has no schema change. No background updater or automatic push of the private laptop repository is configured.
