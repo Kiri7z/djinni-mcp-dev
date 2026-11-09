@@ -1,6 +1,6 @@
 # Djinni MCP — development repository
 
-Public source code for inspection, development and testing. This repository supplies the source for the PyPI/uvx distribution. Prerelease 0.3.0rc1 targets PyPI distribution and independent Linux testing. Publishing source enables review of the implementation; it is not a guarantee that vulnerabilities are absent.
+Public source code for inspection, development and testing. This repository supplies the source for the PyPI/uvx distribution. Prerelease [0.3.0rc1 is available on PyPI](https://pypi.org/project/djinni-mcp/0.3.0rc1/); independent Linux acceptance remains pending. Publishing source enables review of the implementation; it is not a guarantee that vulnerabilities are absent.
 
 A small local MCP server for public Djinni job discovery, a saved candidate profile and repeat-aware recommendations.
 
@@ -22,7 +22,7 @@ Phase 1 is an accepted development baseline. Phase 2 follows the [simplified pla
 
 Public discovery is anonymous/read-only; profile, report and exclusion changes are explicit local writes. The connected AI client handles the interview, optional document reading, matching and short drafts. There is no Djinni login, automatic application sending, document watcher, scheduler, CV parser, own LLM API or numeric scoring framework. The package candidate adds platformdirs for a persistent data location across launch directories.
 
-The [v0.1 acquisition contract](docs/tool-contract.md) and [v0.2 local workflow contract](docs/tool-contract-v0.2.md) define inputs, outputs and limits. [v0.2 verification results](docs/verification-v0.2.md) describe what was actually checked.
+The [v0.1 acquisition contract](docs/tool-contract.md) and [v0.2 local workflow contract](docs/tool-contract-v0.2.md) define inputs, outputs and limits. [v0.2 workflow verification](docs/verification-v0.2.md) and [v0.3 package/publication verification](docs/verification-v0.3.md) describe completed checks and limits.
 
 ## Install and run
 

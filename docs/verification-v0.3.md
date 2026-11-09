@@ -44,3 +44,26 @@ Raw manifests, scanner output, dependency resolution, installation environments 
 - PyPI publisher attestations are prepared in the workflow but do not exist until a real publication.
 
 A source archive README warning from setuptools is nonfatal: the intentionally excluded developer README is replaced by the declared docs/package-readme.md, which is present in both sdist and distribution metadata. Strict PyPI metadata validation passed. Open source, clean scanners and known-advisory checks are not guarantees that all vulnerabilities or secrets are absent. uvx environments isolate dependencies, not OS permissions; top-level version pinning does not freeze every transitive dependency.
+
+
+## Publication verification — 2026-11-09
+
+This section supersedes the pending publication/automated-platform items in the local preparation record above. Independent owner acceptance remains pending.
+
+- Source/tag: [v0.3.0rc1](https://github.com/Kiri7z/djinni-mcp-dev/releases/tag/v0.3.0rc1), commit bdf42ba1a4ad02adffd566a9469110b0f0ba57bc. The 36-file public tree matched the reviewed snapshot. Author and committer use GitHub's no-reply address; the laptop's private Git history was not pushed.
+- [Main validation](https://github.com/Kiri7z/djinni-mcp-dev/actions/runs/42651940048) passed all six macOS/Ubuntu/Windows + Python 3.11/3.14 jobs. Logs confirmed 27 unittest cases and real uvx stdio checks per environment, plus sdist installation.
+- [Tagged release workflow](https://github.com/Kiri7z/djinni-mcp-dev/actions/runs/42652422517) passed its build, six verification jobs and PyPI publish job. The pypi environment permits v* tags only. No permanent PyPI API token was configured.
+- [PyPI 0.3.0rc1](https://pypi.org/project/djinni-mcp/0.3.0rc1/) contains the wheel and sdist, MIT metadata and the correct source link. Both files were downloaded from PyPI and their SHA-256 hashes matched the tagged CI artifacts exactly. Runtime module hashes matched the reviewed source; the CI artifacts also passed allowlist, personal-path/email, secret-scan and strict metadata checks.
+- pypi-attestations 0.0.31 cryptographically verified both downloaded files using the expected GitHub repository. PyPI provenance identifies Kiri7z/djinni-mcp-dev, release.yml, environment pypi. This verifies publisher provenance, not absence of vulnerabilities.
+- A fresh-cache, by-name `uvx djinni-mcp@0.3.0rc1 --version` downloaded from PyPI and reported 0.3.0rc1. A separate fresh-cache MCP client launch by package name passed eight-tool discovery, synthetic profile/history/exclusion/report checks and persistence across processes/working directories. No local --from archive was used in these post-publication checks.
+
+An extra offline-only probe initially lacked a wheel for the interpreter selected under the MCP client's environment. The ordinary network-enabled first-run test above passed; offline first installation is not promised. Runtime source was not changed to work around the test environment.
+
+### Published file identity
+
+| PyPI file | SHA-256 |
+| --- | --- |
+| `djinni_mcp-0.3.0rc1-py3-none-any.whl` | `59ec1bd884942e567ba2dfbc7005f7376e015c953ad74358c95fb548f6637a43` |
+| `djinni_mcp-0.3.0rc1.tar.gz` | `0fe6a9a9b818474c15387eaea422814907040831a1196fa7dc5a0d388891af34` |
+
+Remaining: the owner's independent Linux PC test, any additional client/Windows manual acceptance, stable release and MCP Market listing. Automated Linux CI does not replace the independent test. Raw API/provenance/signature logs and the publication receipt remain under ignored local/release/0.3.0rc1/.

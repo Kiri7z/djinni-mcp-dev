@@ -4,7 +4,7 @@ This is maintainer documentation. Users only need [setup.md](setup.md).
 
 ## Release identity
 
-- PyPI project: `djinni-mcp` (not reserved until the first successful publication).
+- PyPI project: `djinni-mcp` ([published prerelease](https://pypi.org/project/djinni-mcp/0.3.0rc1/)).
 - Console command: `djinni-mcp`.
 - Public source: `Kiri7z/djinni-mcp-dev`.
 - Candidate package version: `0.3.0rc1`.
@@ -15,7 +15,7 @@ The source repository is not a separate runtime dependency. Installable archives
 
 ## Preparation record — 2026-11-09
 
-At the end of local preparation: PyPI upload, source tag, remote workflow execution and account link were still pending. Consult verification-v0.3.md for subsequent publication evidence. The source release must be tied to a reviewed public commit before publication. macOS checks and their limits are recorded in [verification-v0.3.md](verification-v0.3.md); the owner's independent Linux acceptance comes after the prerelease upload. Do not describe pending CI jobs as platform test results.
+At the end of local preparation: PyPI upload, source tag, remote workflow execution and account link were still pending. Publication has since completed through the tagged GitHub workflow; see [verification-v0.3.md](verification-v0.3.md#publication-verification--2026-11-09) for file hashes, CI and signature checks. The source release must be tied to a reviewed public commit before publication. macOS checks and their limits are recorded in [verification-v0.3.md](verification-v0.3.md); the owner's independent Linux acceptance comes after the prerelease upload. Do not describe pending CI jobs as platform test results.
 
 ## Prepare and inspect
 
