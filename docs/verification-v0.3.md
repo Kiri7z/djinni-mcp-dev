@@ -76,3 +76,17 @@ Independent Fedora feedback confirmed that 0.3.0rc1 installed, collected the CV/
 The existing workflow and server guidance now include an actual 3–5-sentence message per suitable vacancy without another confirmation when preferences are unset. Explicit per-request instructions take priority, then saved prepare_drafts/draft_language, then enabled/Ukrainian defaults. A saved opt-out is retained. Chat/report language does not determine the draft fallback. No storage schema, candidate data, source collector, dependencies or automatic sending behavior changed.
 
 Local validation: 27 existing tests passed; built wheel/sdist passed exact artifact/metadata/privacy checks; uvx real-stdio checks passed with Python 3.11 and 3.14. The actual get_workflow response exposed the new defaults, reading an empty profile did not fabricate settings, and explicit no/English settings persisted across processes. These checks validate transport/state/guidance exposure; they do not simulate or guarantee the AI client's final drafted prose. Retest the drafted output in a new chat or explicitly reload get_workflow after changing package version and restarting MCP. Release CI, PyPI publication and end-user draft acceptance are pending at this preparation point.
+
+
+### 0.3.0rc2 publication verification — 2026-11-09
+
+The [tagged workflow](https://github.com/Kiri7z/djinni-mcp-dev/actions/runs/42658693977) completed build, all six macOS/Ubuntu/Windows + Python 3.11/3.14 checks, and publication successfully. [PyPI 0.3.0rc2](https://pypi.org/project/djinni-mcp/0.3.0rc2/) is available from the reviewed source commit eccadfb4fa1d1bf823981db1a1828dd11250376e. The 36-file public tree matched the reviewed snapshot and the tag; original private Git history was not pushed.
+
+Downloaded PyPI files matched the CI manifest hashes exactly. Their runtime modules matched the reviewed source, artifact privacy/metadata checks passed, and pypi-attestations verified both signatures for the expected repository/workflow/environment. A fresh-cache MCP launch by package name from PyPI passed eight-tool discovery and synthetic profile/history/exclusion/report persistence across processes and launch directories. An initial attempt immediately after upload saw the older package index; after confirming the index contained rc2, a --refresh launch succeeded. This is index/cache propagation, not a package-code failure.
+
+| Published file | SHA-256 |
+| --- | --- |
+| `djinni_mcp-0.3.0rc2-py3-none-any.whl` | `8974a6849128580b2ef3a76dcd879a3557ed42aeea6232256c6b98cdb2c79e67` |
+| `djinni_mcp-0.3.0rc2.tar.gz` | `dd86518e38550d1994df927e31c56c0bd6aeaaa96a103e1d0ceb9bfc9320e2b4` |
+
+The version-update pipeline is already operational: source/tag -> tests -> a new PyPI version, without overwriting old releases. Users update the pinned argument and restart MCP; a new chat or explicit get_workflow reread is needed for instruction refresh. Ready-message generation by the user's AI client still needs a repeat acceptance run; transport/state tests do not synthesize that behavior. Profile storage and schema are unchanged.

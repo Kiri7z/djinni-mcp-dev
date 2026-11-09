@@ -62,7 +62,7 @@ Update by changing the configured package version and restarting the connection.
 | Symptom | Check |
 | --- | --- |
 | uvx not found | Install uv, restart the client, or use the full uvx executable path. |
-| Version not found | Check the configured version and PyPI/network availability; prereleases must be selected explicitly. |
+| Version not found | Check the version and PyPI/network availability. Right after a release, retry once in a terminal with `uvx --refresh djinni-mcp@0.3.0rc2 --version`, then restart MCP; prereleases must be selected explicitly. |
 | Manual launch waits silently | Expected: it waits for an MCP client. Ctrl+C stops a manual run. Use --version for a non-server check. |
 | Profile appears empty | Compare DJINNI_MCP_DATA_DIR and the default data folder across clients; do not overwrite old data. |
 | Missing tools or old guidance | Restart/refresh the MCP connection; expect eight tools. |

@@ -1,6 +1,6 @@
 # Djinni MCP — development repository
 
-Public source code for inspection, development and testing. This repository supplies the source for the PyPI/uvx distribution. Prerelease 0.3.0rc2 enables ready Ukrainian application drafts by default. Independent Fedora feedback confirmed installation, onboarding and public discovery in 0.3.0rc1; draft-default acceptance is pending. Publishing source enables review of the implementation; it is not a guarantee that vulnerabilities are absent.
+Public source code for inspection, development and testing. This repository supplies the source for the PyPI/uvx distribution. Published prerelease [0.3.0rc2](https://pypi.org/project/djinni-mcp/0.3.0rc2/) enables ready Ukrainian application drafts by default. Independent Fedora feedback confirmed installation, onboarding and public discovery in 0.3.0rc1; draft-default acceptance is pending. Publishing source enables review of the implementation; it is not a guarantee that vulnerabilities are absent.
 
 A small local MCP server for public Djinni job discovery, a saved candidate profile and repeat-aware recommendations.
 
