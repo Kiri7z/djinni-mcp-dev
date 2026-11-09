@@ -43,3 +43,9 @@ Expanded ignore rules passed 11 synthetic document/key/database-sidecar/private-
 ## Public setup preparation — 2026-11-09
 
 Added a dedicated setup guide linked from README: source clone/install, macOS/Linux and PowerShell paths, Codex registration, generic desktop settings/JSON, stable private data location, eight-tool discovery, first-use prompts, update steps and troubleshooting. Codex registration was checked against official documentation and local CLI help without modifying the user's client configuration. All relative documentation targets and the example JSON parse successfully. All 25 regression tests passed again and pip check found no broken requirements. Other operating systems were not exercised. Public publication uses a new source-only Git history with a GitHub no-reply identity; original private state/history is not imported.
+
+## Public installation acceptance — 2026-11-09
+
+The explicitly authorized public repository is https://github.com/Kiri7z/djinni-mcp. Its 28 source/documentation files were cloned over HTTPS and matched the reviewed per-file SHA-256 manifest. The initial two public commits used GitHub no-reply addresses for both author and committer, with no original development ancestry. A subsequent documentation-only commit records this acceptance and corrects pre-publication README wording; its author metadata and final source tree are checked before completion.
+
+A separate new Python 3.14.7 virtual environment installed the public clone using pip install -c requirements.lock.txt -e . with build isolation and dependencies from PyPI. Installation succeeded, all 25 tests passed from that clone (including installed stdio process checks), and pip check found no broken requirements. No candidate profile or actual host configuration was imported. Raw install output and the release receipt are private local artifacts. Windows/Linux and another user's GUI configuration remain untested.

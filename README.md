@@ -104,7 +104,7 @@ Live observations are written to ignored `local/implementation/live-smoke.json`.
 
 ## Purpose
 
-Provide consistent, compact job-search results while reducing repeated browsing and unnecessary model context. A future public GitHub repository and MCP Market listing are portfolio goals, not a commercial product launch.
+Provide consistent, compact job-search results while reducing repeated browsing and unnecessary model context. This public repository is a portfolio project, not a commercial product launch. An MCP Market listing is possible future work.
 
 ## Working agreements
 
@@ -124,6 +124,6 @@ See the [publication privacy boundary](docs/publication-privacy.md) before creat
 
 Candidate profiles, CVs, contact details, search preferences, authentication state, and generated private reports belong in ignored `local/` or an explicitly configured private data directory outside Git. Public examples/tests use synthetic placeholders. Never copy personal files from the parent workspace into tracked project files. Candidate facts are not sent to Djinni.
 
-See the [approved research baseline](docs/research-plan.md), [research findings and reuse decisions](docs/research.md), and [dependency notes](docs/dependencies.md). GitHub/MCP Market publication and the project's public license are still pending. No third-party collector code or real job-description datasets are included.
+See the [approved research baseline](docs/research-plan.md), [research findings and reuse decisions](docs/research.md), and [dependency notes](docs/dependencies.md). The public repository contains a reviewed source snapshot; MCP Market submission and project license selection remain pending. No third-party collector code or real job-description datasets are included.
 
 The implementation uses native RSS discovery with public HTML/JSON-LD enrichment through existing parsers. Coverage and date/status ambiguity prevent a promise of exhaustive results. Existing MCP servers were not selected for unchanged adoption. See the historical [research reproduction steps](docs/research-reproduction.md).
