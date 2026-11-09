@@ -1,0 +1,186 @@
+# Djinni job acquisition research
+
+Checked on 2026-11-09 against [approved baseline v1](research-plan.md), committed before research as `96ada0a`. Anonymous, public, read-only access only.
+
+## Decision
+
+The leading acquisition approach is Djinni's native RSS for discovery, enriched and checked through public HTML/JobPosting JSON-LD. Existing XML/HTML parsers suffice; the tested public scenarios do not require browser automation.
+
+No inspected MCP server meets our requirements unchanged. The smallest MIT candidate runs but has significant data-contract gaps. A later decision should compare targeted reuse of that adapter with a thin official-SDK integration. Research completion does not authorize a custom collector or server implementation.
+
+Fallback: public HTML listings with JSON-LD and pagination, particularly when RSS coverage is uncertain. Neither approach establishes access to all authenticated jobs.
+
+Exactly three acquisition options were practically evaluated: native RSS; public HTML/JSON-LD; the Djinni adapter from `kaidashova/job-assistant-mcp`. Other candidates were inspected, not run. No account, candidate profile, paid service, recruiter message, or application action was used.
+
+## 1. Result contract
+
+Target fields: numeric source ID, canonical URL, title, company, description, work format, eligible locations, English requirement, stated employer salary, source dates, activity evidence, and check time.
+
+- Missing or ambiguous fields remain unknown/raw values.
+- `TELECOMMUTE` is not worldwide eligibility. Structured region data may omit country restrictions from visible text.
+- Dollar-sign tiers and platform salary analytics are not employer salaries.
+- HTTP success and a future `validThrough` do not by themselves establish current activity.
+- Failed acquisition means error/unknown, not zero matches or closed.
+- RSS `pubDate` and JSON-LD `datePosted` are not safely interpreted as original publication dates.
+
+## 2. Practical option A: native RSS
+
+Source: [Djinni RSS](https://djinni.co/jobs/rss/). The [filtered public search](https://djinni.co/jobs/?primary_keyword=Sysadmin&employment=remote) itself links to the corresponding filtered feed. This is not an invented endpoint.
+
+Actual anonymous HTTP returned 200 and parseable RSS. Python's existing `xml.etree.ElementTree` parsed it; no XML parser was implemented. Requests used an explicit research user agent.
+
+| Query | RSS count | Public HTML comparison | Finding |
+| --- | ---: | --- | --- |
+| Unfiltered | 100 | Not exhaustive | Potentially truncated |
+| `primary_keyword=Sysadmin&employment=remote` | 42 | Three pages, 15 + 15 + 12 unique IDs | Exact ID-set agreement for this snapshot |
+| Same query plus `page=2` | 42 | Identical RSS bytes | Parameter did not advance feed |
+| `primary_keyword=DevOps&employment=remote` | 84 | No exhaustive HTML comparison | DevOps category tags |
+| `primary_keyword=Lead&employment=remote&company_type=product` | 9 | Nine matching IDs; HTML cards labelled Product | Exact ID-set agreement for this snapshot |
+| Site title-search fields: `all_keywords` / `search_type=title-only` | 100 | First HTML page had 15 IDs | Wide query; phrase/AND semantics not established |
+| Synthetic no-match title query | 0 | Valid XML | Empty differs from failed parsing |
+
+Items provided title, link, GUID, description HTML, pubDate, categories. Dedicated company, location, salary, English, and active/closed fields were absent from the inspected item schema. Information embedded in prose is not verified normalized coverage.
+
+An immediate repeat was byte-identical. `If-Modified-Since` using the observed Last-Modified returned 200 and the full 238,271-byte body, not 304. No ETag was observed in the initial response; conditional-GET savings cannot be assumed.
+
+Coverage limits: 100 entries were observed in broad feeds; this does not prove a documented universal cap. The one paging check did not advance results. Agreement for the 42/9-item cohorts is not whole-site completeness. Long-term changes, ordering ties, additional filters, and authenticated coverage remain untested.
+
+## 3. Practical option B: public HTML/JSON-LD
+
+Listing pages contain `script[type="application/ld+json"]` with JobPosting records. Existing Beautiful Soup 4.15.0 plus Python's HTML parser located it, and `json.loads` decoded it. No custom parsing library or browser was written.
+
+Across the same 42 listing records:
+
+- All 42 numeric IDs matched RSS.
+- JSON-LD included company, title, URL, description, category, experience, employment type, source dates.
+- 35 contained `jobLocationType=TELECOMMUTE`; seven omitted it despite appearing in the remote search. The filter is not per-item proof.
+- 29 contained applicantLocationRequirements; completeness of country eligibility was not established.
+- Six contained employer baseSalary with currency and monthly min/max. Absent salaries remained absent.
+- English was visible in the sampled detail HTML, but not a dedicated JSON-LD field. Extraction across all jobs was not implemented/validated.
+- A login-to-see-all-jobs notice appeared on listings; label anonymous coverage public-only.
+
+One [open card](https://djinni.co/jobs/837568-it-service-desk-and-ai-helpdesk-lead/) and one [explicitly closed card](https://djinni.co/jobs/845892-team-lead-infrastructure-noc-sre-lead/) both returned HTTP 200. The closed card said the ad was no longer active and had no JobPosting JSON-LD. The open card had JSON-LD and no closed notice. This is a bounded observation, not a universal detector: missing JSON-LD alone must not mean closed.
+
+Timestamp counterexample: the open card visibly said `Published 16 July` / `Updated 3 November`, while RSS pubDate and JSON-LD datePosted pointed to November 3. Do not invent a year for a yearless label or treat source dates as original publication dates. Its December 3 validThrough does not guarantee it stays open until then.
+
+## 4. Practical option C: existing MIT adapter
+
+[kaidashova/job-assistant-mcp](https://github.com/kaidashova/job-assistant-mcp), commit `0e49431c85a9f1aaff9f52ce745d4fdebe5035ae`, package 0.1.0, initial commit October 5, 2026. Sustained maintenance was not established.
+
+[MIT license](https://github.com/kaidashova/job-assistant-mcp/blob/0e49431c85a9f1aaff9f52ce745d4fdebe5035ae/LICENSE): retain applicable notices when reusing code. This does not license Djinni content.
+
+The [adapter](https://github.com/kaidashova/job-assistant-mcp/blob/0e49431c85a9f1aaff9f52ce745d4fdebe5035ae/app/sources/djinni.py) uses HTTPX and standard-library XML parsing. Its import closure was inspected before execution: no import-time network, candidate/profile/database reads, subprocesses or writes. Only `DjinniSource.fetch` was run, with HTTPX and Pydantic. The full MCP server, matching service, tracker and profile layer were not started or tested.
+
+| Probe | Observed result |
+| --- | --- |
+| DevOps remote | 84 results, DevOps tags; no company/location/salary populated |
+| Sysadmin remote | 100 results across many categories; Sysadmin absent from category mapping |
+| Remote attribution | Every result marked true from the request flag, without item-level confirmation |
+| Valid empty RSS, local mock | Empty list |
+| HTTP 200 malformed HTML, local mock | ParseError, not empty success |
+| HTTP 403, local mock | HTTPStatusError, not empty success |
+| Synthetic same numeric vacancy with renamed URL slug | Different generated IDs |
+
+These are raw-adapter results. Higher layers apply additional text filtering and were not run; do not claim the full server returns the same unfiltered output. A broad recent feed can nevertheless omit category results before local filtering occurs.
+
+Source-inspected gaps: get_job reads cache instead of live status; no closed field/check time; no pagination; URL-hash identity changes with slug; missing company defeats company/title deduplication. README claims SDK v2, but [pyproject](https://github.com/kaidashova/job-assistant-mcp/blob/0e49431c85a9f1aaff9f52ce745d4fdebe5035ae/pyproject.toml) permits `mcp>=1.2.0`; full-server compatibility untested.
+
+Decision: a permissible targeted-reuse/PR candidate, not a ready solution. No fixes were made during research.
+
+## 5. Inspected alternatives, not executed
+
+| Candidate | License/access | Reason not tested |
+| --- | --- | --- |
+| [facetoplace/Workix](https://github.com/facetoplace/Workix), `403d4210566f1ca15b21e293813699a354f4d6c8` | [`mcp/` has MIT LICENSE](https://github.com/facetoplace/Workix/blob/403d4210566f1ca15b21e293813699a354f4d6c8/mcp/LICENSE); root has separate noncommercial terms | Same RSS, larger multi-board/proxy/hub scope. Existing rss-parser, but missing dates replaced with current time; no live closure check. Source version 1.2.7; current npm version unverified. |
+| [dvoichuck/ai-job-hunt-kit-public](https://github.com/dvoichuck/ai-job-hunt-kit-public), `176b558036422a00283a6fc0209371c09821d631` | No license file found; disclaimer is not reuse permission | Current public name found; earlier 404 did not prove permanent disappearance. Browser/account/write scope unnecessary, redistribution unresolved. |
+| [YaroslavMichkivskyi/djinni-mcp](https://github.com/YaroslavMichkivskyi/djinni-mcp), `6119b1e27a9cf9da040ad0b8a0b0743c75612c9d` | No license file found; personal/still testing | Custom protocol machinery plus account/write features; no verified redistribution grant. |
+| [bovi/djinni-scraper](https://apify.com/bovi/djinni-scraper) | Hosted, no OSS source/license established | Account/metered dependency; documented capabilities untested, header/README pricing inconsistent. |
+| [blackfalcondata/djinni-scraper](https://apify.com/blackfalcondata/djinni-scraper) | Hosted, no OSS source/license established | Incremental/compact output untested; post-fetch filters/default page cap complicate coverage. Contact extraction unnecessary. |
+
+bovi header advertised from USD 0.70/1,000 while README stated USD 0.00099/result for a platform tier. This discrepancy is unresolved. blackfalcondata README listed USD 0.005/start plus USD 0.00095/result. Neither is a verified total including plans, optional proxies, failures and repeat detail requests. [Apify pricing](https://apify.com/pricing) listed USD 5 Free credit; no account or eligibility test was performed.
+
+The [Standard Actor Contract](https://docs.apify.com/legal/standard-actor-contract) is a default platform-use contract, not an OSS redistribution license; actor-specific overrides were not verified. Separate use of a hosted service, copying its code, and rights to third-party output. [General terms](https://docs.apify.com/legal/general-terms-and-conditions) describe a business-oriented service; applicability to this personal portfolio use is unresolved. Hosted options remain documented fallbacks, not the selected local solution.
+
+## 6. Access and publication conditions
+
+- [PeopleForce's own guide](https://help.peopleforce.io/en/articles/9299327-integration-with-djinni) verifies employer API-key integration, posting and applicant synchronization. It does not establish an anonymous candidate-search API. No public candidate-search documentation was found in this bounded check.
+- [Djinni Terms of Use](https://djinni.co/terms-of-use) prohibit spam and sharing recruiter correspondence. The inspected page does not explicitly grant bulk job-text republication rights or settle all automated public-read uses.
+- [robots.txt](https://djinni.co/robots.txt) returned 200: disallowed `/jobs2`, `/q`, `/developers`, `/free-jobs`, `/set_lang`; tested `/jobs/` routes were not disallowed. This is not a copyright/redistribution grant.
+- Source access, library licensing and rights to captured job text are separate. Public repository examples should be synthetic, with source links rather than copied real description/contact datasets. Recheck source conditions before publication or wider deployment.
+
+## 7. Efficiency and repeated searches
+
+One observed 42-job cohort, not a performance SLA:
+
+| Representation | Requests | Size |
+| --- | ---: | ---: |
+| Original HTML listing bodies | 3 | 1,075,385 bytes |
+| Filtered RSS | 1 | 238,271 bytes |
+| Extracted full JSON-LD | Local processing | 197,744 bytes |
+| Selected compact JSON fields, without descriptions | Local processing | 16,646 UTF-8 bytes / 16,528 characters |
+
+Compact output omits 119,628 description characters, so it is not information-equivalent to full results. RSS and HTML have different metadata. This shows a context-reduction opportunity from parsing and selective retrieval, not measured token savings or an inherent benefit of MCP.
+
+Opening the same three listing URLs through the existing web-reading tool returned a serialized payload of 28,921 characters in 1.476 seconds. It extracts/truncates content, and timing includes different work than raw HTTP. Direct page request times summed to 1.555 seconds; RSS took 0.459 seconds. No quality-equivalent end-to-end speed, ranking or actual token benchmark was performed.
+
+Recurring search needs numeric identity and locally stored observations for first-seen/changed/already-shown/closed. Immediate repeat stability was observed; future changes, update latency and scheduling were not tested or implemented. Missing from a limited feed must not mean closed.
+
+## 8. Recommendation and next decision
+
+1. Use native RSS plus public HTML/JSON-LD enrichment and existing parsers as the leading source path.
+2. Keep candidate assessment/reporting in a skill or existing tools; do not start with spreadsheets, proxies, account automation or a scheduler.
+3. Decide separately whether to adapt the MIT project or build a minimal official-SDK interface around the verified source path. Preserve notices for reused code. No custom XML/HTML/protocol libraries are justified.
+4. Define date, location and activity uncertainty before implementation. Do not promise exhaustive search or guaranteed token savings.
+
+## 9. Evidence and baseline completion
+
+See [reproduction steps](research-reproduction.md). Python 3.14.7; parsing dependencies and downloaded inspected adapter exist only under ignored `local/`. Tested archive SHA-256: `6277da13643bc752bee670002531a15aa735baa77534a8a53c6604608fbca7a5`.
+
+Ignored `local/research/2026-11-09/` contains HTTP bodies/metadata, structured captures, a SHA-256 manifest, dependency metadata, adapter/error probes and size measurements. This tracked report contains sanitized findings, not candidate data or copied job-description datasets.
+
+| Approved stage | Status | Qualification |
+| --- | --- | --- |
+| 1. Contract/criteria | Complete | Fields and unknown-preserving rules |
+| 2. Discovery | Complete | Bounded shortlist, not exhaustive ecosystem coverage |
+| 3. License/access | Complete for research decision | Hosted overrides/data republication rights unresolved; neither adopted |
+| 4. Inspection/selection | Complete | Exactly three options tested; import closure reviewed first |
+| 5. Practical comparison | Complete within bounded scope | 42/9-ID matches, repeat/paging/conditional checks, adapter/failure probes; long-term/full-site/auth behavior untested |
+| 6. Recommendation | Complete | Source combination/fallback; no server built |
+| 7. Reproducibility | Complete for research | Versions and relative-path steps recorded; full server not tested |
+| 8. Record outcomes | Complete | This report; baseline unchanged |
+
+## 10. Implementation decision — 2026-11-09
+
+After research, the owner explicitly requested that the tool contract be recorded and the minimal version implemented. The original research baseline and observations above remain historical evidence.
+
+Selected: a standalone, small official-SDK stdio interface around the verified RSS + public HTML/JSON-LD path. Reusing the complete MIT candidate-management application would retain unrelated profile/tracker surfaces and require correcting its identity, filtering and status behavior. No collector code was copied. Only Djinni-specific mapping, URL boundaries and two-tool orchestration are new application code; no protocol, XML/HTML, export or comparison library was created.
+
+Components selected before integration: official MCP SDK 2.3.0 (MIT), HTTPX 0.28.1 (BSD-3-Clause), Beautiful Soup 4.15.0 (MIT), defusedxml 0.7.1 (PSF), and Pydantic 2.14.3 (MIT). The SDK supplies protocol/client/schema/error handling; existing parsers handle source documents. See [dependency metadata and primary documentation](dependencies.md), [v0.1 contract](tool-contract.md), and [verification results and limits](verification.md).
+
+Implemented: anonymous `search_jobs` and `get_job`, numeric identity, bounded acquisition/output, explicit errors, source dates and open/closed/unknown evidence. Deferred: private history, scheduling, ranking/reporting, accounts, applications, publication and public-project license selection. These are scope boundaries, not evidence of exhaustive coverage or measured token savings.
+
+## 11. Phase 2 reuse decision — 2026-11-09
+
+The owner authorized a deliberately simple local workflow, superseding the broader draft: questionnaire precedence; explicit CV refresh; saved profile reused across batches; recommendation history, manual exclusions and saved Markdown; no automatic content hash/invalidation, application-status inference or age feature. See [the accepted v0.2 contract](tool-contract-v0.2.md).
+
+Use existing Python sqlite3/json/file operations (PSF-licensed Python; SQLite is public domain) plus the already adopted official SDK and Pydantic (MIT). SQLite availability was verified in the development Python. The earlier phase-2 inspection considered the existing MIT job-assistant profile/database/application repositories; a standalone application dependency or copied architecture is unnecessary for this small schema. New code is limited to project-specific state/tool glue. No new runtime dependency, Markdown parser/exporter, CV parser or external model service is justified.
+
+## 12. Manual-workflow usability correction — 2026-11-09
+
+A real desktop run successfully saved the profile, searched public jobs and saved five recommendations. It exposed an instruction gap: asking only essential criteria omitted the optional CV/achievement invitation, and opt-in drafts were neither enabled nor offered. Correct the existing bundled workflow and server guidance: four-item initial onboarding, explicit draft preference/language and a short draft/offer branch. Existing profile/history/report fields already support this; no new library, tool, database schema or CV read is needed. Also state the existing search limit (1–50) explicitly to avoid observed invalid 100-item requests. Private chat/profile content and real application examples are not copied into tracked artifacts.
+
+## 13. Company context in recommendations — 2026-11-09
+
+The owner requested three sentences about the company and the role's place in its business, followed by five sentences assessing the position and candidate fit. Reuse the existing get_job description and bundled client workflow; no new service, library, copied code or license is involved. The current tool contract already supplies vacancy text and accepts plain-text summaries and Markdown reports. Use only company context stated in the vacancy. Missing context must be marked briefly, without padding, inferred business activities, external searches or company-site visits unless the user explicitly requests research. This is client instruction behavior, not deterministic sentence-count enforcement; source acquisition and storage schemas stay unchanged.
+
+## 14. Candidate experience tense — 2026-11-09
+
+The owner requested experience-based or past-tense candidate wording rather than automatically presenting historical team sizes, achievements and duties as ongoing work. Reuse the existing bundled workflow and server guidance, with no new dependency, copied code, license or schema change. This applies to assessments and application drafts in every language; known completed outcomes stay completed, and ongoing duties require explicit confirmation. Neutral wording must not imply that employment ended. This is a client drafting rule, not an automatic edit of stored profiles or historical reports.
+
+## 15. Pre-publication privacy review — 2026-11-09
+
+The owner requested a privacy review of the proposed GitHub publication, including history. Reuse Git's tracked-file/object inventory and existing Python standard-library read/hash/copy operations (PSF); no scanner dependency, generic scanning library or external data upload is introduced. Dedicated secret scanners were not installed in the inspected environment. Bounded local pattern checks and manual review cover the selected files and reachable history; they are not a proof that every possible secret format is detected. Keep raw findings and candidate data under ignored local/ or temporary storage. Prepare a tracked-files-only publication snapshot without .git, ignored runtime data or original commit identities, preserving the working repository and its private state. Publication still requires a fresh inspection and deliberate choice of non-private Git author metadata.
+
+## 16. Public setup documentation — 2026-11-09
+
+The owner explicitly authorized a public GitHub repository and requested complete installation/connection instructions. Reuse the current Python virtual-environment installation, standard MCP stdio command/environment settings and existing placeholder configuration; no runtime code, dependency or protocol change is needed. Codex registration syntax was checked against the official MCP documentation and locally installed CLI help. Document an explicit persistent DJINNI_MCP_DATA_DIR so client working-directory changes do not create different profiles. Include macOS/Linux and PowerShell commands, expected tool discovery and troubleshooting, distinguishing tested macOS behavior from untested platform instructions. The GitHub plugin provides repository reads and content writes but no repository-creation tool in this session; use the official website for creation and retain safe public author metadata for publication.

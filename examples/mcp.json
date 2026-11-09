@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "djinni": {
+      "command": "/ABSOLUTE/PATH/TO/djinni-mcp/.venv/bin/djinni-mcp",
+      "args": [],
+      "env": {
+        "DJINNI_MCP_DATA_DIR": "/ABSOLUTE/PATH/TO/PRIVATE/djinni-mcp-data"
+      }
+    }
+  }
+}

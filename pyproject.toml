@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "djinni-public-mcp"
+version = "0.2.1"
+description = "Small local MCP for public Djinni job discovery and user-managed search history"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "mcp==2.3.0",
+  "httpx==0.28.1",
+  "beautifulsoup4==4.15.0",
+  "defusedxml==0.7.1",
+  "pydantic>=2.12,<3",
+]
+
+[project.scripts]
+djinni-mcp = "djinni_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

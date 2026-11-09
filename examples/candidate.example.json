@@ -1,0 +1,8 @@
+{
+  "name": "EXAMPLE CANDIDATE",
+  "location_country": "EXAMPLE COUNTRY",
+  "target_roles": ["EXAMPLE ROLE"],
+  "work_format": "remote",
+  "minimum_salary": null,
+  "language_requirements": []
+}

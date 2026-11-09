@@ -1,0 +1,15 @@
+{
+  "questionnaire": {
+    "target_roles": "EXAMPLE ROLE",
+    "target_geography": "EXAMPLE TARGET REGION",
+    "work_format": "Remote only",
+    "salary": "EXAMPLE AMOUNT / CURRENCY / PERIOD / GROSS OR NET",
+    "prepare_drafts": "yes",
+    "draft_language": "EXAMPLE APPLICATION LANGUAGE",
+    "output_language": "EXAMPLE LANGUAGE"
+  },
+  "resume_facts": {
+    "candidate_summary": "SYNTHETIC EXPERIENCE SUMMARY",
+    "achievements": "SYNTHETIC USER-PROVIDED ACHIEVEMENT"
+  }
+}
