@@ -46,6 +46,10 @@ Added a dedicated setup guide linked from README: source clone/install, macOS/Li
 
 ## Public installation acceptance — 2026-11-09
 
-The explicitly authorized public repository is https://github.com/Kiri7z/djinni-mcp. Its 28 source/documentation files were cloned over HTTPS and matched the reviewed per-file SHA-256 manifest. The initial two public commits used GitHub no-reply addresses for both author and committer, with no original development ancestry. A subsequent documentation-only commit records this acceptance and corrects pre-publication README wording; its author metadata and final source tree are checked before completion.
+The explicitly authorized public repository is https://github.com/Kiri7z/djinni-mcp-dev. Its 28 source/documentation files were cloned over HTTPS and matched the reviewed per-file SHA-256 manifest. The initial two public commits used GitHub no-reply addresses for both author and committer, with no original development ancestry. A subsequent documentation-only commit records this acceptance and corrects pre-publication README wording; its author metadata and final source tree are checked before completion.
 
 A separate new Python 3.14.7 virtual environment installed the public clone using pip install -c requirements.lock.txt -e . with build isolation and dependencies from PyPI. Installation succeeded, all 25 tests passed from that clone (including installed stdio process checks), and pip check found no broken requirements. No candidate profile or actual host configuration was imported. Raw install output and the release receipt are private local artifacts. Windows/Linux and another user's GUI configuration remain untested.
+
+## Development repository clarification — 2026-11-09
+
+The public source repository was renamed to djinni-mcp-dev. Local AGENTS.md instructions and their README duplicate were removed from the current public tree; application source and tests were retained. Clone URLs and setup directory names now use the development repository name. This documentation-only update does not claim a ready-to-run distribution or certify the absence of vulnerabilities.

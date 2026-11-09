@@ -17,8 +17,8 @@ Run in a terminal in the directory where you keep projects.
 ### macOS or Linux
 
 ```sh
-git clone https://github.com/Kiri7z/djinni-mcp.git
-cd djinni-mcp
+git clone https://github.com/Kiri7z/djinni-mcp-dev.git
+cd djinni-mcp-dev
 python3 --version
 python3 -m venv .venv
 .venv/bin/python -m pip install -c requirements.lock.txt -e .
@@ -34,8 +34,8 @@ The last command prints the executable and private data paths for the next step.
 ### Windows PowerShell
 
 ```powershell
-git clone https://github.com/Kiri7z/djinni-mcp.git
-Set-Location djinni-mcp
+git clone https://github.com/Kiri7z/djinni-mcp-dev.git
+Set-Location djinni-mcp-dev
 py -3 --version
 py -3 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -c requirements.lock.txt -e .

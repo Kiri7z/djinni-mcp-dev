@@ -6,9 +6,11 @@ Publish the reviewed source snapshot, not the developer's workspace or private d
 
 - Project source, synthetic tests, dependency declarations and lock snapshot.
 - Project documentation and placeholder MCP/profile examples.
-- .gitignore and project instructions that contain no host-specific configuration.
+- .gitignore without host-specific configuration.
 
 ## Excluded contents
+
+- Local AGENTS.md development instructions; these are not required to run or connect the MCP server.
 
 - .git and its original history, identities, remotes, hooks, logs and local configuration.
 - local/, including candidate profiles, CV facts, SQLite databases, reports, audit details, HTTP captures and release preparation artifacts.
@@ -18,7 +20,7 @@ Publish the reviewed source snapshot, not the developer's workspace or private d
 
 ## Reviewed snapshot
 
-The local publication snapshot is assembled from an explicit list of Git-tracked regular files plus this document. It contains current saved edits, rather than only the last commit. No recursive copy of the workspace or private directories is used. Its per-file SHA-256 manifest is stored beside the snapshot, outside the public payload. Any later source change makes that snapshot stale and requires regeneration/review.
+The local publication snapshot is assembled from an explicit source/documentation allowlist that excludes local AGENTS.md. It contains current saved edits, rather than only the last commit. No recursive copy of the workspace or private directories is used. Its per-file SHA-256 manifest is stored beside the snapshot, outside the public payload. Any later source change makes that snapshot stale and requires regeneration/review.
 
 The 2026-11-09 review checked 26 previously tracked file paths, all reachable historical blobs in seven commits and commit/tag metadata. No candidate documents, personal host paths or actual credentials were found in source contents. A URL slug resembling a token and a synthetic URL containing test credentials were false positives. Personal commit identities were found; the snapshot excludes all original Git metadata. Raw findings remain private.
 

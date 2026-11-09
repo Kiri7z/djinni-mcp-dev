@@ -1,4 +1,6 @@
-# Djinni MCP
+# Djinni MCP — development repository
+
+Public source code for inspection, development and testing. This repository contains the source installation; a download-and-run distribution is not available here yet. Publishing source enables review of the implementation; it is not a guarantee that vulnerabilities are absent.
 
 A small local MCP server for public Djinni job discovery, a saved candidate profile and repeat-aware recommendations.
 
@@ -27,8 +29,8 @@ The [v0.1 acquisition contract](docs/tool-contract.md) and [v0.2 local workflow 
 Requires Python 3.11 or newer; verified on Python 3.14.7/macOS. Run in a terminal:
 
 ```sh
-git clone https://github.com/Kiri7z/djinni-mcp.git
-cd djinni-mcp
+git clone https://github.com/Kiri7z/djinni-mcp-dev.git
+cd djinni-mcp-dev
 python3 -m venv .venv
 .venv/bin/python -m pip install -c requirements.lock.txt -e .
 .venv/bin/djinni-mcp
@@ -105,18 +107,6 @@ Live observations are written to ignored `local/implementation/live-smoke.json`.
 ## Purpose
 
 Provide consistent, compact job-search results while reducing repeated browsing and unnecessary model context. This public repository is a portfolio project, not a commercial product launch. An MCP Market listing is possible future work.
-
-## Working agreements
-
-- Maintain project documentation in English; discuss work with the owner in Russian.
-- Research existing services, libraries, SDKs, skills, and standards before implementing functionality.
-- Prefer a maintained, suitable existing solution over custom infrastructure. Explain concrete limitations before choosing a custom implementation.
-- Use the official MCP SDK if an MCP server is justified; do not implement the protocol from scratch.
-- Keep the initial scope small: public job discovery and vacancy details. Applications and recruiter messages remain manual.
-- Verify source capabilities before relying on them. Previously observed RSS response headers do not establish feed completeness or filtering support.
-- Keep missing values explicit. Do not infer salary, location eligibility, or job status from unrelated signals.
-- Separate deterministic data handling from model-based assessment.
-- Do not reuse third-party code without checking its license. Public visibility alone is not a redistribution license.
 
 ## Privacy
 
