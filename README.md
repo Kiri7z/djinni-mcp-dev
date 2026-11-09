@@ -1,6 +1,6 @@
 # Djinni MCP — development repository
 
-Source code for Djinni MCP, distributed as a ready-to-run PyPI package. Version 0.3.0 is the first stable release following independent Fedora acceptance. Ready Ukrainian application drafts are included by default; explicit opt-outs and language choices take priority. The source remains available for inspection, development and testing.
+Source code for Djinni MCP, distributed as a ready-to-run PyPI package. [Version 0.3.0](https://pypi.org/project/djinni-mcp/0.3.0/) is the first stable release following independent Fedora acceptance. Ready Ukrainian application drafts are included by default; explicit opt-outs and language choices take priority. The source remains available for inspection, development and testing.
 
 A small local MCP server for public Djinni job discovery, a saved candidate profile and repeat-aware recommendations.
 

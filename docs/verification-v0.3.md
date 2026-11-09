@@ -99,3 +99,20 @@ On 2026-11-09 the owner confirmed that 0.3.0rc2 works in the independent Fedora 
 The owner also requested removal of repetitive unknown-status labels. A fresh bounded anonymous live check returned two open and one closed detail result. The existing detail path can therefore confirm some statuses; RSS summaries intentionally cannot. No source heuristics or raw activity schema changed. New client guidance displays only confirmed get_job status and omits unknown activity labels from chat/summaries/Markdown. Unknown is never converted to open, material detail-fetch failures remain transparent, and other missing salary/location/date handling is preserved.
 
 Local checks: 27 existing source/state/SDK tests passed, including open/closed/unknown distinctions and source failures. The stable wheel/sdist passed exact-content, personal-path/email, secret-scan and strict metadata checks. Real uvx stdio checks passed on Python 3.11/3.14; profile/history/exclusion/report persistence is unchanged. Historical verification remains above for audit. Stable CI/publication evidence will be recorded separately after upload; instruction-driven status rendering remains client behavior rather than a server-generated report formatter.
+
+
+### Stable 0.3.0 publication — 2026-11-09
+
+[GitHub v0.3.0](https://github.com/Kiri7z/djinni-mcp-dev/releases/tag/v0.3.0) is a published stable/latest release (prerelease=false), from reviewed commit ec9f33a5370a006e790729e702398bc971f21498. The [release workflow](https://github.com/Kiri7z/djinni-mcp-dev/actions/runs/42662215784) passed build, all six platform/Python jobs and PyPI publication.
+
+[PyPI 0.3.0](https://pypi.org/project/djinni-mcp/0.3.0/) uses stable metadata and has no preview/testing banner in the package description. The default project JSON identifies 0.3.0 as the current release. Downloaded wheel/sdist hashes match the verified CI manifest; runtime modules match the reviewed source. Archive privacy/metadata checks passed, and pypi-attestations cryptographically verified both files for the expected repository/workflow/environment.
+
+| Published file | SHA-256 |
+| --- | --- |
+| `djinni_mcp-0.3.0-py3-none-any.whl` | `112b81085c2c815f7c033133ec48e39b3a8de72e2ae69284f536047cc7d6e053` |
+| `djinni_mcp-0.3.0.tar.gz` | `c1d2f48f0bdafe5c9f52cdaae614ea76aeafd051f8bf1662d2f3c732424a7320` |
+
+The package upload initially preceded the install index's visibility of 0.3.0; the first by-name smoke attempt could not yet resolve that version. The post-propagation installation result is recorded below. No source workaround or replacement release was introduced for this indexing delay.
+
+
+Post-propagation check: the PyPI install index contained the stable wheel/sdist and a by-name uvx launch with a fresh package cache passed eight-tool discovery, synthetic profile/history/exclusion/report checks and persistence across two processes/working directories. Signatures and published file/source checks above passed. The user connection remains pinned to 0.3.0; restart and reload get_workflow (or start a new chat) to receive the status-presentation guidance. No data reset or CV reread is required for this update.
